@@ -3,7 +3,6 @@ package org.dokiteam.doki.reader.ui
 import android.app.assist.AssistContent
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
@@ -12,10 +11,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
@@ -240,18 +237,6 @@ class ReaderActivity :
 	}
 
 	private fun startRpcService() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-			if (ContextCompat.checkSelfPermission(
-					this,
-					android.Manifest.permission.POST_NOTIFICATIONS,
-				) != PackageManager.PERMISSION_GRANTED
-			) {
-				registerForActivityResult(
-					ActivityResultContracts.RequestPermission()
-				) {}.launch(android.Manifest.permission.POST_NOTIFICATIONS)
-			}
-		}
-
 		Intent(this, DiscordRPCService::class.java).apply {
 			action = DiscordRPCService.START_RPC_ACTION
 			putExtra("TOKEN", "") // type your Discord Token at here, secret key
