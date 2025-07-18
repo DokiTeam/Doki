@@ -3,6 +3,7 @@ package org.dokiteam.doki.reader.ui
 import android.app.assist.AssistContent
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
@@ -11,8 +12,10 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
@@ -56,6 +59,7 @@ import org.dokiteam.doki.details.ui.pager.pages.PagesSavedObserver
 import org.dokiteam.doki.parsers.model.MangaChapter
 import org.dokiteam.doki.reader.data.TapGridSettings
 import org.dokiteam.doki.reader.domain.TapGridArea
+import org.dokiteam.doki.reader.service.DiscordRPCService
 import org.dokiteam.doki.reader.ui.config.ReaderConfigSheet
 import org.dokiteam.doki.reader.ui.pager.ReaderPage
 import org.dokiteam.doki.reader.ui.pager.ReaderUiState
@@ -170,6 +174,13 @@ class ReaderActivity :
 			viewBinding.zoomControl.isVisible = it
 		}
 		addMenuProvider(ReaderMenuProvider(viewModel) { openMenu() })
+		startRpcService()
+
+		viewModel.uiState.observe(this) { state ->
+			if (state != null) {
+				updateDiscordPresence(state)
+			}
+		}
 	}
 
 	override fun getParentActivityIntent(): Intent? {
@@ -188,6 +199,7 @@ class ReaderActivity :
 	override fun onPause() {
 		super.onPause()
 		viewModel.onPause()
+		stopService(Intent(this, DiscordRPCService::class.java))
 	}
 
 	override fun onProvideAssistContent(outContent: AssistContent) {
@@ -200,7 +212,13 @@ class ReaderActivity :
 	override fun isNsfwContent(): Flow<Boolean> = viewModel.isMangaNsfw
 
 	override fun onIdle() {
+		stopService(Intent(this, DiscordRPCService::class.java))
 		viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
+	}
+
+	override fun onDestroy() {
+		super.onDestroy()
+		stopService(Intent(this, DiscordRPCService::class.java))
 	}
 
 	override fun onVisibilityChanged(v: View, visibility: Int) {
@@ -219,6 +237,36 @@ class ReaderActivity :
 		when (v.id) {
 			R.id.button_timer -> onScrollTimerClick(isLongClick = false)
 		}
+	}
+
+	private fun startRpcService() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+			if (ContextCompat.checkSelfPermission(
+					this,
+					android.Manifest.permission.POST_NOTIFICATIONS,
+				) != PackageManager.PERMISSION_GRANTED
+			) {
+				registerForActivityResult(
+					ActivityResultContracts.RequestPermission()
+				) {}.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+			}
+		}
+
+		Intent(this, DiscordRPCService::class.java).apply {
+			action = DiscordRPCService.START_RPC_ACTION
+			putExtra("TOKEN", "") // type your Discord Token at here, secret key
+		}.also { startService(it) }
+	}
+
+	private fun updateDiscordPresence(state: ReaderUiState) {
+		Intent(this, DiscordRPCService::class.java).apply {
+			action = DiscordRPCService.UPDATE_RPC_ACTION
+			putExtra(DiscordRPCService.EXTRA_MANGA_TITLE, state.mangaName)
+			putExtra(DiscordRPCService.EXTRA_CHAPTER_NUMBER, state.chapterNumber)
+			putExtra(DiscordRPCService.EXTRA_CURRENT_PAGE, state.currentPage)
+			putExtra(DiscordRPCService.EXTRA_TOTAL_PAGES, state.totalPages)
+			putExtra("TOKEN", "") // type your Discord Token at here, secret key
+		}.also { startService(it) }
 	}
 
 	private fun onInitReader(mode: ReaderMode?) {
@@ -488,9 +536,13 @@ class ReaderActivity :
 			var dontAskAgain = false
 			val listener = DialogInterface.OnClickListener { _, which ->
 				if (which == DialogInterface.BUTTON_NEUTRAL) {
+					stopService(Intent(this@ReaderActivity, DiscordRPCService::class.java))
 					finishAfterTransition()
+				} else if (which == DialogInterface.BUTTON_POSITIVE) {
+					stopService(Intent(this@ReaderActivity, DiscordRPCService::class.java))
+					viewModel.setIncognitoMode(true, dontAskAgain)
 				} else {
-					viewModel.setIncognitoMode(which == DialogInterface.BUTTON_POSITIVE, dontAskAgain)
+					viewModel.setIncognitoMode(false, dontAskAgain)
 				}
 			}
 			setCheckbox(R.string.dont_ask_again, dontAskAgain) { _, isChecked ->
@@ -502,7 +554,10 @@ class ReaderActivity :
 			setPositiveButton(R.string.incognito, listener)
 			setNegativeButton(R.string.disable, listener)
 			setNeutralButton(android.R.string.cancel, listener)
-			setOnCancelListener { finishAfterTransition() }
+			setOnCancelListener {
+				stopService(Intent(this@ReaderActivity, DiscordRPCService::class.java))
+				finishAfterTransition()
+			}
 			setCancelable(true)
 		}.show()
 	}

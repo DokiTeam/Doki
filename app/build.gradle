@@ -95,6 +95,8 @@ dependencies {
 		exclude group: 'org.json', module: 'json'
 	}
 
+	implementation libs.kizzyrpc
+
 	coreLibraryDesugaring libs.desugar.jdk.libs
 	implementation libs.kotlin.stdlib
 	implementation libs.kotlinx.coroutines.android
