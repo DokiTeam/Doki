@@ -95,8 +95,6 @@ dependencies {
 		exclude group: 'org.json', module: 'json'
 	}
 
-	implementation libs.kizzyrpc
-
 	coreLibraryDesugaring libs.desugar.jdk.libs
 	implementation libs.kotlin.stdlib
 	implementation libs.kotlinx.coroutines.android
@@ -129,6 +127,7 @@ dependencies {
 	implementation libs.androidx.room.ktx
 	ksp libs.androidx.room.compiler
 
+	implementation libs.kizzyrpc
 	implementation libs.okhttp
 	implementation libs.okhttp.tls
 	implementation libs.okhttp.dnsoverhttps

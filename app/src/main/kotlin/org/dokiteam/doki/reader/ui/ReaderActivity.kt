@@ -542,7 +542,7 @@ class ReaderActivity :
 					stopService(Intent(this@ReaderActivity, DiscordRPCService::class.java))
 					viewModel.setIncognitoMode(true, dontAskAgain)
 				} else {
-					viewModel.setIncognitoMode(false, dontAskAgain)
+					viewModel.setIncognitoMode(which == DialogInterface.BUTTON_POSITIVE, dontAskAgain)
 				}
 			}
 			setCheckbox(R.string.dont_ask_again, dontAskAgain) { _, isChecked ->
