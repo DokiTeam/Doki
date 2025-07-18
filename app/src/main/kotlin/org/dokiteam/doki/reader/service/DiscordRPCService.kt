@@ -47,8 +47,8 @@ class DiscordRPCService : Service() {
 
 	private fun updateRpcActivity(intent: Intent) {
 		val mangaTitle = intent.getStringExtra(EXTRA_MANGA_TITLE) ?: return
-		val chapterNumber = intent.getIntExtra(EXTRA_CHAPTER_NUMBER, 0)
-		val currentPage = intent.getIntExtra(EXTRA_CURRENT_PAGE, 0)
+		val chapterNumber = intent.getIntExtra(EXTRA_CHAPTER_NUMBER, 1)
+		val currentPage = intent.getIntExtra(EXTRA_CURRENT_PAGE, 1)
 		val totalPages = intent.getIntExtra(EXTRA_TOTAL_PAGES, 0)
 
 		scope.launch {
