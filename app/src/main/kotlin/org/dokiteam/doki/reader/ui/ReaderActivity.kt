@@ -239,7 +239,7 @@ class ReaderActivity :
 	private fun startRpcService() {
 		Intent(this, DiscordRPCService::class.java).apply {
 			action = DiscordRPCService.START_RPC_ACTION
-			putExtra(DiscordRPCService.EXTRA_TOKEN, "") // type your Discord Token at here, secret key
+			putExtra("TOKEN", "") // type your Discord Token at here, secret key
 		}.also { startService(it) }
 	}
 
@@ -248,9 +248,9 @@ class ReaderActivity :
 			action = DiscordRPCService.UPDATE_RPC_ACTION
 			putExtra(DiscordRPCService.EXTRA_MANGA_TITLE, state.mangaName)
 			putExtra(DiscordRPCService.EXTRA_CHAPTER_NUMBER, state.chapterNumber)
-			putExtra(DiscordRPCService.EXTRA_CURRENT_PAGE, state.currentPage + 1)
+			putExtra(DiscordRPCService.EXTRA_CURRENT_PAGE, state.currentPage+1)
 			putExtra(DiscordRPCService.EXTRA_TOTAL_PAGES, state.totalPages)
-			putExtra(DiscordRPCService.EXTRA_TOKEN, "") // type your Discord Token at here, secret key
+			putExtra("TOKEN", "") // type your Discord Token at here, secret key
 		}.also { startService(it) }
 	}
 

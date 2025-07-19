@@ -859,9 +859,4 @@
 	<string name="main_screen">Main screen</string>
 	<string name="main_screen_fab">Show floating Continue button</string>
 	<string name="main_screen_fab_summary">Allows to continue reading in a one click. This button will not appear in incognito mode or when the history is empty</string>
-	<string name="discord_rpc_state">Chapter: %1$s - Progress (Page): %2$s/%3$s</string>
-	<string name="discord_button_read">Link to Doki</string>
-	<string name="discord_button_source">Link to manga source</string>
-	<string name="discord_rpc_large_text">Reading manga on Doki - A manga reader app</string>
-	<string name="discord_rpc_small_text">Reading: %s</string>
 </resources>
