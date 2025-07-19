@@ -27,6 +27,8 @@ class DiscordRPCService : Service() {
 		const val EXTRA_CHAPTER_NUMBER = "chapter_number"
 		const val EXTRA_CURRENT_PAGE = "current_page"
 		const val EXTRA_TOTAL_PAGES = "total_pages"
+		const val EXTRA_MANGA_LINK = "manga_link"
+		const val EXTRA_MANGA_APP_URL = "manga_app_url"
 		var token: String? = null
 	}
 
@@ -50,6 +52,8 @@ class DiscordRPCService : Service() {
 		val chapterNumber = intent.getIntExtra(EXTRA_CHAPTER_NUMBER, 1)
 		val currentPage = intent.getIntExtra(EXTRA_CURRENT_PAGE, 1)
 		val totalPages = intent.getIntExtra(EXTRA_TOTAL_PAGES, 0)
+		val mangaLink = intent.getStringExtra(EXTRA_MANGA_LINK)
+		val mangaAppUrl = intent.getStringExtra(EXTRA_MANGA_APP_URL)
 
 		scope.launch {
 			rpc?.setActivity(
@@ -72,8 +76,8 @@ class DiscordRPCService : Service() {
 					// TODO: Add manga link for these buttons
 					metadata = Metadata(
 						listOf(
-							"https://google.com", // Link to Doki
-							"https://mimihentai.com", // Link to manga source
+							mangaAppUrl, 
+							mangaLink, 
 						)
 					)
 				),

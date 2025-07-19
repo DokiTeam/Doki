@@ -33,6 +33,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.dokiteam.doki.R
 import org.dokiteam.doki.core.exceptions.resolve.DialogErrorObserver
+import org.dokiteam.doki.core.model.appUrl
 import org.dokiteam.doki.core.nav.AppRouter
 import org.dokiteam.doki.core.nav.router
 import org.dokiteam.doki.core.prefs.AppSettings
@@ -250,6 +251,8 @@ class ReaderActivity :
 			putExtra(DiscordRPCService.EXTRA_CHAPTER_NUMBER, state.chapterNumber)
 			putExtra(DiscordRPCService.EXTRA_CURRENT_PAGE, state.currentPage+1)
 			putExtra(DiscordRPCService.EXTRA_TOTAL_PAGES, state.totalPages)
+			putExtra(DiscordRPCService.EXTRA_MANGA_LINK, viewModel.getMangaOrNull()?.publicUrl ?: viewModel.getMangaOrNull()?.url)
+			putExtra(DiscordRPCService.EXTRA_MANGA_APP_URL, viewModel.getMangaOrNull()?.appUrl?.toString())
 			putExtra("TOKEN", "") // type your Discord Token at here, secret key
 		}.also { startService(it) }
 	}
