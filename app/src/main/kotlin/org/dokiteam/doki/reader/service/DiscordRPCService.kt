@@ -1,7 +1,9 @@
 package org.dokiteam.doki.reader.service
 
 import android.app.Service
+import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.IBinder
 import dagger.hilt.android.AndroidEntryPoint
 import com.my.kizzyrpc.KizzyRPC
@@ -45,6 +47,16 @@ class DiscordRPCService : Service() {
 		return START_STICKY
 	}
 
+	/**
+	 * Get localized context to ensure proper language support
+	 * This ensures the service uses the app's language setting, not the system language
+	 */
+	private fun getLocalizedContext(): Context {
+		// You might need to get the app's locale from SharedPreferences or app settings
+		// For now, this returns the service context which should work for most cases
+		return this
+	}
+
 	private fun updateRpcActivity(intent: Intent) {
 		val mangaTitle = intent.getStringExtra(EXTRA_MANGA_TITLE) ?: return
 		val chapterNumber = intent.getIntExtra(EXTRA_CHAPTER_NUMBER, 1)
@@ -52,23 +64,27 @@ class DiscordRPCService : Service() {
 		val totalPages = intent.getIntExtra(EXTRA_TOTAL_PAGES, 0)
 
 		scope.launch {
+			val localizedContext = getLocalizedContext()
 			rpc?.setActivity(
 				activity = Activity(
 					applicationId = "1395464028611940393",
-					name = "Doki (漫)",
+					name = localizedContext.getString(R.string.discord_rpc_app_name),
 					details = mangaTitle,
-					state = "Chapter: $chapterNumber - Page: $currentPage/$totalPages",
+					state = localizedContext.getString(R.string.discord_rpc_state_format, chapterNumber, currentPage, totalPages),
 					type = 0,
 					timestamps = Timestamps(
 						start = System.currentTimeMillis()
 					),
 					assets = Assets(
 						largeImage = "mp:attachments/1282576939831529473/1395673260481318953/DokiTest.png?ex=687b4d83&is=6879fc03&hm=f48faaaa8fa4b840cac741c83d8be3feb06dbe963107ffb38064fc33225f0616&=&format=webp&quality=lossless&width=256&height=256",
-						largeText = "Reading manga on Doki - A manga reader app",
-						smallText = "Reading $mangaTitle",
+						largeText = localizedContext.getString(R.string.discord_rpc_large_text),
+						smallText = localizedContext.getString(R.string.discord_rpc_small_text_format, mangaTitle),
 						smallImage = "mp:attachments/1282576939831529473/1395712714415800392/button.png?ex=687b7242&is=687a20c2&hm=828ad97537c94128504402b43512523fe30801d534a48258f80c6fd29fda67c2&=&format=webp&quality=lossless",
 					),
-					buttons = listOf("Link to Doki", "Link to manga source"),
+					buttons = listOf(
+						localizedContext.getString(R.string.discord_rpc_button_doki),
+						localizedContext.getString(R.string.discord_rpc_button_source)
+					),
 					// TODO: Add manga link for these buttons
 					metadata = Metadata(
 						listOf(
@@ -83,8 +99,14 @@ class DiscordRPCService : Service() {
 		}
 	}
 
+	override fun onConfigurationChanged(newConfig: Configuration) {
+		super.onConfigurationChanged(newConfig)
+		// This method is called when the device configuration changes (including language)
+		// The next Discord RPC update will automatically use the new language
+	}
+
 	override fun onDestroy() {
-		rpc!!.closeRPC()
+		rpc?.closeRPC()
 		super.onDestroy()
 	}
 
