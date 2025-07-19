@@ -179,6 +179,13 @@ class ReaderActivity :
 				updateDiscordPresence(state)
 			}
 		}
+		
+		// Observe Discord RPC settings changes
+		settings.observe(AppSettings.KEY_DISCORD_RPC_ENABLED, AppSettings.KEY_DISCORD_TOKEN).observe(this) {
+			if (!settings.isDiscordRpcEnabled) {
+				stopRpcService()
+			}
+		}
 	}
 
 	override fun getParentActivityIntent(): Intent? {
@@ -238,13 +245,41 @@ class ReaderActivity :
 	}
 
 	private fun startRpcService() {
+		if (!settings.isDiscordRpcEnabled) {
+			return // Don't start service if Discord RPC is disabled
+		}
+		
+		val token = settings.discordToken
+		if (token.isNullOrBlank()) {
+			return // Don't start service if no token is configured
+		}
+		
 		Intent(this, DiscordRPCService::class.java).apply {
 			action = DiscordRPCService.START_RPC_ACTION
-			putExtra("TOKEN", "") // type your Discord Token at here, secret key
+			putExtra("TOKEN", token)
 		}.also { startService(it) }
 	}
 
+	private fun stopRpcService() {
+		// First clear the activity on Discord
+		Intent(this, DiscordRPCService::class.java).apply {
+			action = DiscordRPCService.STOP_RPC_ACTION
+		}.also { startService(it) }
+		
+		// Then stop the service
+		stopService(Intent(this, DiscordRPCService::class.java))
+	}
+
 	private fun updateDiscordPresence(state: ReaderUiState) {
+		if (!settings.isDiscordRpcEnabled) {
+			return // Don't update presence if Discord RPC is disabled
+		}
+		
+		val token = settings.discordToken
+		if (token.isNullOrBlank()) {
+			return // Don't update presence if no token is configured
+		}
+		
 		Intent(this, DiscordRPCService::class.java).apply {
 			action = DiscordRPCService.UPDATE_RPC_ACTION
 			putExtra(DiscordRPCService.EXTRA_MANGA_TITLE, state.mangaName)
@@ -253,8 +288,8 @@ class ReaderActivity :
 			putExtra(DiscordRPCService.EXTRA_TOTAL_PAGES, state.totalPages)
 			putExtra(DiscordRPCService.EXTRA_MANGA_LINK, viewModel.getMangaOrNull()?.publicUrl ?: viewModel.getMangaOrNull()?.url)
 			putExtra(DiscordRPCService.EXTRA_MANGA_APP_URL, viewModel.getMangaOrNull()?.appUrl?.toString())
-			putExtra("TOKEN", "") // type your Discord Token at here, secret key
-		}.also { startService(it) }
+			putExtra("TOKEN", token)
+		}.also { startService(it) } 
 	}
 
 	private fun onInitReader(mode: ReaderMode?) {

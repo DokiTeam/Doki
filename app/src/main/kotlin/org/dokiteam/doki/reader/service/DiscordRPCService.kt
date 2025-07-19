@@ -23,6 +23,7 @@ class DiscordRPCService : Service() {
 		const val CHANNEL_ID = "DokiRPC"
 		const val START_RPC_ACTION = "START_RPC_ACTION"
 		const val UPDATE_RPC_ACTION = "UPDATE_RPC_ACTION"
+		const val STOP_RPC_ACTION = "STOP_RPC_ACTION"
 		const val EXTRA_MANGA_TITLE = "manga_title"
 		const val EXTRA_CHAPTER_NUMBER = "chapter_number"
 		const val EXTRA_CURRENT_PAGE = "current_page"
@@ -43,6 +44,9 @@ class DiscordRPCService : Service() {
 			UPDATE_RPC_ACTION -> {
 				updateRpcActivity(intent)
 			}
+			STOP_RPC_ACTION -> {
+				clearRpcActivity()
+			}
 		}
 		return START_STICKY
 	}
@@ -56,7 +60,7 @@ class DiscordRPCService : Service() {
 		val mangaAppUrl = intent.getStringExtra(EXTRA_MANGA_APP_URL)
 
 		scope.launch {
-			rpc?.setActivity(
+			rpc?.updateRPC(
 				activity = Activity(
 					applicationId = "1395464028611940393",
 					name = "Doki (漫)",
@@ -87,8 +91,16 @@ class DiscordRPCService : Service() {
 		}
 	}
 
+	private fun clearRpcActivity() {
+		scope.launch {
+			rpc?.closeRPC()
+		}
+	}
+
 	override fun onDestroy() {
-		rpc?.closeRPC()
+		scope.launch {
+			rpc?.closeRPC()
+		}
 		super.onDestroy()
 	}
 
