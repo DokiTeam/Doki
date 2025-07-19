@@ -53,7 +53,7 @@ class DiscordRPCService : Service() {
 		val totalPages = intent.getIntExtra(EXTRA_TOTAL_PAGES, 0)
 
 		scope.launch {
-			rpc?.setActivity(
+			rpc?.updateRPC( // testing
 				activity = Activity(
 					applicationId = "1395464028611940393",
 					name = "Doki (漫)",
@@ -64,7 +64,7 @@ class DiscordRPCService : Service() {
 						start = System.currentTimeMillis()
 					),
 					assets = Assets(
-						largeImage = "mp:attachments/1282576939831529473/1395673260481318953/DokiTest.png?ex=687b4d83&is=6879fc03&hm=f48faaaa8fa4b840cac741c83d8be3feb06dbe963107ffb38064fc33225f0616&=&format=webp&quality=lossless&width=256&height=256",
+						largeImage = "mp:attachments/1396092865544716390/1396124167543324783/Doki.png?ex=687cf174&is=687b9ff4&hm=dd139d9aff24fc92e458382c84f1203a6f0dc46e801a7bbd7ec2af2f7908d8c8&=&format=webp&quality=lossless&width=256&height=256",
 						largeText = getString(R.string.discord_rpc_large_text),
 						smallText = getString(R.string.discord_rpc_small_text, mangaTitle),
 						smallImage = "mp:attachments/1282576939831529473/1395712714415800392/button.png?ex=687b7242&is=687a20c2&hm=828ad97537c94128504402b43512523fe30801d534a48258f80c6fd29fda67c2&=&format=webp&quality=lossless",

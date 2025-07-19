@@ -835,4 +835,9 @@
     <string name="book_effect">Làm dịu ánh màu xanh của ảnh (chuyển sang màu vàng)</string>
     <string name="local_storage_cleanup">Dọn dẹp bộ nhớ lưu trữ cục bộ</string>
     <string name="packup_creation_failed">Tạo bản sao lưu dữ liệu thất bại</string>
+	<string name="discord_rpc_state">Chương: %1$s - Tiến độ (Trang): %2$s/%3$s</string>
+	<string name="discord_button_read">Liên kết đến Doki</string>
+	<string name="discord_button_source">Liên kết đến nguồn đọc</string>
+	<string name="discord_rpc_large_text">Đang đọc truyện trên ứng dụng Doki :3</string>
+	<string name="discord_rpc_small_text">Hiện đang đọc: %s</string>
 </resources>
