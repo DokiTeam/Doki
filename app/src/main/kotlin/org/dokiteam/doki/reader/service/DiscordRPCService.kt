@@ -77,7 +77,6 @@ class DiscordRPCService : Service() {
 						smallImage = "mp:attachments/1282576939831529473/1395712714415800392/button.png?ex=687b7242&is=687a20c2&hm=828ad97537c94128504402b43512523fe30801d534a48258f80c6fd29fda67c2&=&format=webp&quality=lossless",
 					),
 					buttons = listOf("Link to Doki", "Link to manga source"),
-					// TODO: Add manga link for these buttons
 					metadata = Metadata(
 						listOf(
 							mangaAppUrl, 

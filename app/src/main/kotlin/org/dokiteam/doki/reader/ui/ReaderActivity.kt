@@ -183,8 +183,7 @@ class ReaderActivity :
 				}
 			}
 		}
-		
-		// Observe Discord RPC settings changes
+
 		settings.observe(AppSettings.KEY_DISCORD_RPC_ENABLED, AppSettings.KEY_DISCORD_TOKEN).observe(this) {
 			if (!settings.isDiscordRpcEnabled) {
 				stopRpcService()
@@ -250,12 +249,12 @@ class ReaderActivity :
 
 	private fun startRpcService() {
 		if (!settings.isDiscordRpcEnabled) {
-			return // Don't start service if Discord RPC is disabled
+			return
 		}
 		
 		val token = settings.discordToken
 		if (token.isNullOrBlank()) {
-			return // Don't start service if no token is configured
+			return
 		}
 		
 		Intent(this, DiscordRPCService::class.java).apply {
@@ -265,23 +264,21 @@ class ReaderActivity :
 	}
 
 	private fun stopRpcService() {
-		// First clear the activity on Discord
 		Intent(this, DiscordRPCService::class.java).apply {
 			action = DiscordRPCService.STOP_RPC_ACTION
 		}.also { startService(it) }
-		
-		// Then stop the service
+
 		stopService(Intent(this, DiscordRPCService::class.java))
 	}
 
 	private fun updateDiscordPresence(state: ReaderUiState) {
 		if (!settings.isDiscordRpcEnabled) {
-			return // Don't update presence if Discord RPC is disabled
+			return
 		}
 		
 		val token = settings.discordToken
 		if (token.isNullOrBlank()) {
-			return // Don't update presence if no token is configured
+			return
 		}
 		
 		Intent(this, DiscordRPCService::class.java).apply {
