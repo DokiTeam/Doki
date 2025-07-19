@@ -172,11 +172,15 @@ class ReaderActivity :
 			viewBinding.zoomControl.isVisible = it
 		}
 		addMenuProvider(ReaderMenuProvider(viewModel) { openMenu() })
-		startRpcService()
 
 		viewModel.uiState.observe(this) { state ->
 			if (state != null) {
-				updateDiscordPresence(state)
+				if (!state.incognito) {
+					startRpcService()
+					updateDiscordPresence(state)
+				} else {
+					stopRpcService()
+				}
 			}
 		}
 		
