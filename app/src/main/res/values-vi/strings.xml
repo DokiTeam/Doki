@@ -837,8 +837,8 @@
     <string name="packup_creation_failed">Tạo bản sao lưu dữ liệu thất bại</string>
     <string name="discord" translatable="false">Discord</string>
     <string name="discord_rpc">Discord Rich Presence</string>
-    <string name="discord_token">Discord token</string>
-    <string name="discord_token_summary">Nhập Discord bot token của bạn để bật Rich Presence</string>
-    <string name="discord_token_hint">Dán Discord bot token của bạn vào đây</string>
+    <string name="discord_token">Discord Token</string>
+    <string name="discord_token_summary">Nhập Discord Token của bạn để kích hoạt Rich Presence</string>
+    <string name="discord_token_hint">Dán Discord Token của bạn vào đây</string>
     <string name="discord_rpc_summary">Hiển thị trạng thái đọc truyện của bạn trên Discord</string>
 </resources>

@@ -80,6 +80,7 @@
 			android:title="@string/discord_token"
 			android:summary="@string/discord_token_summary"
 			android:hint="@string/discord_token_hint"
+			app:icon="@drawable/ic_key"
 			app:iconSpaceReserved="false" />
 
 	</PreferenceCategory>
