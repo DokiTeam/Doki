@@ -43,7 +43,7 @@ class ActionModeDelegate : OnBackPressedCallback(false) {
 					ctx.getThemeColor(materialR.attr.colorSurface),
 				)
 			} else {
-				ContextCompat.getColor(ctx, R.color.kotatsu_surface)
+				ContextCompat.getColor(ctx, R.color.doki_surface)
 			}
 			defaultStatusBarColor = window.statusBarColor
 			window.statusBarColor = actionModeColor

@@ -20,7 +20,7 @@
 
 	<TextView
 		android:id="@+id/label_storage"
-		style="@style/Widget.Kotatsu.TextView.Indicator"
+		style="@style/Widget.Doki.TextView.Indicator"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginStart="@dimen/screen_padding"
@@ -32,7 +32,7 @@
 
 	<TextView
 		android:id="@+id/label_pages_cache"
-		style="@style/Widget.Kotatsu.TextView.Indicator"
+		style="@style/Widget.Doki.TextView.Indicator"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginStart="@dimen/screen_padding"
@@ -44,7 +44,7 @@
 
 	<TextView
 		android:id="@+id/label_other_cache"
-		style="@style/Widget.Kotatsu.TextView.Indicator"
+		style="@style/Widget.Doki.TextView.Indicator"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginStart="@dimen/screen_padding"
@@ -56,7 +56,7 @@
 
 	<TextView
 		android:id="@+id/label_available"
-		style="@style/Widget.Kotatsu.TextView.Indicator"
+		style="@style/Widget.Doki.TextView.Indicator"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginStart="@dimen/screen_padding"

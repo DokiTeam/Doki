@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.FlowCollector
 import org.dokiteam.doki.R
 import org.dokiteam.doki.core.ui.widgets.SegmentedBarView
 import org.dokiteam.doki.core.util.FileSize
-import org.dokiteam.doki.core.util.KotatsuColors
+import org.dokiteam.doki.core.util.DokiColors
 import org.dokiteam.doki.databinding.PreferenceMemoryUsageBinding
 
 class StorageUsagePreference @JvmOverloads constructor(
@@ -34,15 +34,15 @@ class StorageUsagePreference @JvmOverloads constructor(
 		val binding = PreferenceMemoryUsageBinding.bind(holder.itemView)
 		val storageSegment = SegmentedBarView.Segment(
 			usage?.savedManga?.percent ?: 0f,
-			KotatsuColors.segmentColorRandom(context, Color.BLUE),
+			DokiColors.segmentColorRandom(context, Color.BLUE),
 		)
 		val pagesSegment = SegmentedBarView.Segment(
 			usage?.pagesCache?.percent ?: 0f,
-			KotatsuColors.segmentColorRandom(context, Color.GREEN),
+			DokiColors.segmentColorRandom(context, Color.GREEN),
 		)
 		val otherSegment = SegmentedBarView.Segment(
 			usage?.otherCache?.percent ?: 0f,
-			KotatsuColors.segmentColorRandom(context, Color.GRAY),
+			DokiColors.segmentColorRandom(context, Color.GRAY),
 		)
 
 		with(binding) {

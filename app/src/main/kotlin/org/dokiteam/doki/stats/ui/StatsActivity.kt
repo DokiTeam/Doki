@@ -27,7 +27,7 @@ import org.dokiteam.doki.core.ui.BaseListAdapter
 import org.dokiteam.doki.core.ui.dialog.buildAlertDialog
 import org.dokiteam.doki.core.ui.list.OnListItemClickListener
 import org.dokiteam.doki.core.ui.util.ReversibleActionObserver
-import org.dokiteam.doki.core.util.KotatsuColors
+import org.dokiteam.doki.core.util.DokiColors
 import org.dokiteam.doki.core.util.ext.end
 import org.dokiteam.doki.core.util.ext.observe
 import org.dokiteam.doki.core.util.ext.observeEvent
@@ -81,7 +81,7 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 						value = (v.duration / 1000).toInt(),
 						label = v.manga?.title ?: getString(R.string.other_manga),
 						percent = (v.duration.toDouble() / sum).toFloat(),
-						color = KotatsuColors.ofManga(this, v.manga),
+						color = DokiColors.ofManga(this, v.manga),
 						tag = v.manga,
 					)
 				},
@@ -185,7 +185,7 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 		val checkedIds = viewModel.selectedCategories.value
 		for (category in categories) {
 			val chip = Chip(this)
-			val drawable = ChipDrawable.createFromAttributes(this, null, 0, R.style.Widget_Kotatsu_Chip_Filter)
+			val drawable = ChipDrawable.createFromAttributes(this, null, 0, R.style.Widget_Doki_Chip_Filter)
 			chip.setChipDrawable(drawable)
 			chip.text = category.title
 			chip.tag = category

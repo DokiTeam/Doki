@@ -122,7 +122,7 @@
 					android:layout_height="wrap_content"
 					android:layout_marginHorizontal="@dimen/margin_small"
 					android:layout_marginTop="@dimen/margin_small"
-					app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
+					app:chipStyle="@style/Widget.Doki.Chip.Filter" />
 
 			</org.dokiteam.doki.filter.ui.FilterFieldLayout>
 
@@ -140,7 +140,7 @@
 					android:layout_height="wrap_content"
 					android:layout_marginHorizontal="@dimen/margin_small"
 					android:layout_marginTop="@dimen/margin_small"
-					app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
+					app:chipStyle="@style/Widget.Doki.Chip.Filter" />
 
 			</org.dokiteam.doki.filter.ui.FilterFieldLayout>
 
@@ -157,7 +157,7 @@
 					android:layout_height="wrap_content"
 					android:layout_marginHorizontal="@dimen/margin_small"
 					android:layout_marginTop="@dimen/margin_small"
-					app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
+					app:chipStyle="@style/Widget.Doki.Chip.Filter" />
 
 			</org.dokiteam.doki.filter.ui.FilterFieldLayout>
 
@@ -174,7 +174,7 @@
 					android:layout_height="wrap_content"
 					android:layout_marginHorizontal="@dimen/margin_small"
 					android:layout_marginTop="@dimen/margin_small"
-					app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
+					app:chipStyle="@style/Widget.Doki.Chip.Filter" />
 
 			</org.dokiteam.doki.filter.ui.FilterFieldLayout>
 
@@ -191,7 +191,7 @@
 					android:layout_height="wrap_content"
 					android:layout_marginHorizontal="@dimen/margin_small"
 					android:layout_marginTop="@dimen/margin_small"
-					app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
+					app:chipStyle="@style/Widget.Doki.Chip.Filter" />
 
 			</org.dokiteam.doki.filter.ui.FilterFieldLayout>
 
@@ -208,7 +208,7 @@
 					android:layout_height="wrap_content"
 					android:layout_marginHorizontal="@dimen/margin_small"
 					android:layout_marginTop="@dimen/margin_small"
-					app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
+					app:chipStyle="@style/Widget.Doki.Chip.Filter" />
 
 			</org.dokiteam.doki.filter.ui.FilterFieldLayout>
 

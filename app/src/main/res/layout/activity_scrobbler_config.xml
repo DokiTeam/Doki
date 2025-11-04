@@ -38,7 +38,7 @@
 					app:errorDrawable="@drawable/ic_shortcut_default"
 					app:fallbackDrawable="@drawable/ic_shortcut_default"
 					app:placeholderDrawable="@drawable/bg_badge_empty"
-					app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Circle"
+					app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Doki.Circle"
 					app:strokeColor="?colorOutline"
 					app:strokeWidth="1dp"
 					tools:src="@tools:sample/avatars" />

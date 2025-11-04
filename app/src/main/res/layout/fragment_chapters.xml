@@ -26,7 +26,7 @@
 			android:paddingTop="2dp"
 			android:paddingBottom="6dp"
 			app:chipIconVisible="false"
-			app:chipStyle="@style/Widget.Kotatsu.Chip.Filter"
+			app:chipStyle="@style/Widget.Doki.Chip.Filter"
 			app:singleLine="true" />
 
 	</HorizontalScrollView>

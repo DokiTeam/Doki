@@ -20,7 +20,7 @@ import coil3.request.ImageRequest
 import com.google.android.material.color.MaterialColors
 import org.dokiteam.doki.R
 import org.dokiteam.doki.core.model.getTitle
-import org.dokiteam.doki.core.util.KotatsuColors
+import org.dokiteam.doki.core.util.DokiColors
 import org.dokiteam.doki.core.util.ext.hasFocusStateSpecified
 import org.dokiteam.doki.core.util.ext.mangaSourceKey
 
@@ -57,7 +57,7 @@ open class FaviconDrawable(
 		}
 		paint.textAlign = Paint.Align.CENTER
 		paint.isFakeBoldText = true
-		colorForeground = KotatsuColors.random(name)
+		colorForeground = DokiColors.random(name)
 		currentForegroundColor = MaterialColors.harmonize(colorForeground, colorBackground.defaultColor)
 		onStateChange(state)
 	}

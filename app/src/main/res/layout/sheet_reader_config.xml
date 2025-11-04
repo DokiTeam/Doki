@@ -71,7 +71,7 @@
 
 				<com.google.android.material.button.MaterialButton
 					android:id="@+id/button_standard"
-					style="@style/Widget.Kotatsu.ToggleButton.Vertical"
+					style="@style/Widget.Doki.ToggleButton.Vertical"
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
 					android:layout_weight="1"
@@ -80,7 +80,7 @@
 
 				<com.google.android.material.button.MaterialButton
 					android:id="@+id/button_reversed"
-					style="@style/Widget.Kotatsu.ToggleButton.Vertical"
+					style="@style/Widget.Doki.ToggleButton.Vertical"
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
 					android:layout_weight="1"
@@ -89,7 +89,7 @@
 
 				<com.google.android.material.button.MaterialButton
 					android:id="@+id/button_vertical"
-					style="@style/Widget.Kotatsu.ToggleButton.Vertical"
+					style="@style/Widget.Doki.ToggleButton.Vertical"
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
 					android:layout_weight="1"
@@ -98,7 +98,7 @@
 
 				<com.google.android.material.button.MaterialButton
 					android:id="@+id/button_webtoon"
-					style="@style/Widget.Kotatsu.ToggleButton.Vertical"
+					style="@style/Widget.Doki.ToggleButton.Vertical"
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
 					android:layout_weight="1"
@@ -136,7 +136,7 @@
 				android:layout_marginHorizontal="@dimen/margin_normal"
 				android:layout_marginTop="@dimen/margin_small"
 				android:text="@string/two_page_scroll_sensitivity"
-				android:textAppearance="@style/TextAppearance.Kotatsu.GridTitle" />
+				android:textAppearance="@style/TextAppearance.Doki.GridTitle" />
 
 			<SeekBar
 				android:id="@+id/seekbar_sensitivity"

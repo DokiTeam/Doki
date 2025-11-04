@@ -22,7 +22,7 @@
 			app:layout_constraintDimensionRatio="2:3"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
-			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Medium"
+			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Doki.Cover.Medium"
 			app:trimImage="true"
 			tools:src="@tools:sample/backgrounds/scenic" />
 
