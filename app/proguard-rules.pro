@@ -16,8 +16,10 @@
 -dontwarn com.google.j2objc.annotations.**
 -dontwarn coil3.PlatformContext
 
--keep class org.dokiteam.doki.core.exceptions.* { *; }
 -keep class org.dokiteam.doki.settings.NotificationSettingsLegacyFragment
+-keep class org.dokiteam.doki.settings.about.changelog.ChangelogFragment
+
+-keep class org.dokiteam.doki.core.exceptions.* { *; }
 -keep class org.dokiteam.doki.core.prefs.ScreenshotsPolicy { *; }
 -keep class org.dokiteam.doki.backups.ui.periodical.PeriodicalBackupSettingsFragment { *; }
 -keep class org.jsoup.parser.Tag
