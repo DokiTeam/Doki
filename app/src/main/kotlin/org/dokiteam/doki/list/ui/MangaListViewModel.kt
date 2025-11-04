@@ -3,10 +3,12 @@ package org.dokiteam.doki.list.ui
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
@@ -21,11 +23,14 @@ import org.dokiteam.doki.core.ui.util.ReversibleAction
 import org.dokiteam.doki.core.util.ext.MutableEventFlow
 import org.dokiteam.doki.list.domain.ListFilterOption
 import org.dokiteam.doki.list.ui.model.ListModel
+import org.dokiteam.doki.local.data.LocalStorageChanges
+import org.dokiteam.doki.local.domain.model.LocalManga
 import org.dokiteam.doki.parsers.model.Manga
 
 abstract class MangaListViewModel(
 	private val settings: AppSettings,
 	private val mangaDataRepository: MangaDataRepository,
+	@param:LocalStorageChanges private val localStorageChanges: SharedFlow<LocalManga?>,
 ) : BaseViewModel() {
 
 	abstract val content: StateFlow<List<ListModel>>
@@ -63,7 +68,11 @@ abstract class MangaListViewModel(
 
 	protected fun observeListModeWithTriggers(): Flow<ListMode> = combine(
 		listMode,
-		mangaDataRepository.observeOverridesTrigger(emitInitialState = true),
+		merge(
+			mangaDataRepository.observeOverridesTrigger(emitInitialState = true),
+			mangaDataRepository.observeFavoritesTrigger(emitInitialState = true),
+			localStorageChanges.onStart { emit(null) },
+		),
 		settings.observeChanges().filter { key ->
 			key == AppSettings.KEY_PROGRESS_INDICATORS
 				|| key == AppSettings.KEY_TRACKER_ENABLED

@@ -3,6 +3,7 @@ package org.dokiteam.doki.tracker.ui.updates
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -27,6 +28,8 @@ import org.dokiteam.doki.list.ui.model.ListHeader
 import org.dokiteam.doki.list.ui.model.ListModel
 import org.dokiteam.doki.list.ui.model.LoadingState
 import org.dokiteam.doki.list.ui.model.toErrorState
+import org.dokiteam.doki.local.data.LocalStorageChanges
+import org.dokiteam.doki.local.domain.model.LocalManga
 import org.dokiteam.doki.tracker.domain.TrackingRepository
 import org.dokiteam.doki.tracker.domain.UpdatesListQuickFilter
 import org.dokiteam.doki.tracker.domain.model.MangaTracking
@@ -39,7 +42,8 @@ class UpdatesViewModel @Inject constructor(
 	private val mangaListMapper: MangaListMapper,
 	private val quickFilter: UpdatesListQuickFilter,
 	mangaDataRepository: MangaDataRepository,
-) : MangaListViewModel(settings, mangaDataRepository), QuickFilterListener by quickFilter {
+	@LocalStorageChanges localStorageChanges: SharedFlow<LocalManga?>,
+) : MangaListViewModel(settings, mangaDataRepository, localStorageChanges), QuickFilterListener by quickFilter {
 
 	override val content = combine(
 		quickFilter.appliedOptions.flatMapLatest { filterOptions ->

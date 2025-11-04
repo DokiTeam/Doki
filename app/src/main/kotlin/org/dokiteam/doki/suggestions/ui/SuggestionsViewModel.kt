@@ -3,6 +3,7 @@ package org.dokiteam.doki.suggestions.ui
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -21,6 +22,8 @@ import org.dokiteam.doki.list.ui.MangaListViewModel
 import org.dokiteam.doki.list.ui.model.EmptyState
 import org.dokiteam.doki.list.ui.model.LoadingState
 import org.dokiteam.doki.list.ui.model.toErrorState
+import org.dokiteam.doki.local.data.LocalStorageChanges
+import org.dokiteam.doki.local.domain.model.LocalManga
 import org.dokiteam.doki.suggestions.domain.SuggestionRepository
 import org.dokiteam.doki.suggestions.domain.SuggestionsListQuickFilter
 import javax.inject.Inject
@@ -33,7 +36,8 @@ class SuggestionsViewModel @Inject constructor(
 	private val quickFilter: SuggestionsListQuickFilter,
 	private val suggestionsScheduler: SuggestionsWorker.Scheduler,
 	mangaDataRepository: MangaDataRepository,
-) : MangaListViewModel(settings, mangaDataRepository), QuickFilterListener by quickFilter {
+	@LocalStorageChanges localStorageChanges: SharedFlow<LocalManga?>,
+) : MangaListViewModel(settings, mangaDataRepository, localStorageChanges), QuickFilterListener by quickFilter {
 
 	override val listMode = settings.observeAsFlow(AppSettings.KEY_LIST_MODE_SUGGESTIONS) { suggestionsListMode }
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, settings.suggestionsListMode)
