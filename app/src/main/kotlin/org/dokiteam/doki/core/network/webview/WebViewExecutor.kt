@@ -3,6 +3,8 @@ package org.dokiteam.doki.core.network.webview
 import android.content.Context
 import android.webkit.WebSettings
 import android.webkit.WebView
+import android.webkit.WebViewClient
+import androidx.annotation.MainThread
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
@@ -47,16 +49,21 @@ class WebViewExecutor @Inject constructor(
 	suspend fun evaluateJs(baseUrl: String?, script: String): String? = mutex.withLock {
 		withContext(Dispatchers.Main.immediate) {
 			val webView = obtainWebView()
-			if (!baseUrl.isNullOrEmpty()) {
+			try {
+				if (!baseUrl.isNullOrEmpty()) {
+					suspendCoroutine { cont ->
+						webView.webViewClient = ContinuationResumeWebViewClient(cont)
+						webView.loadDataWithBaseURL(baseUrl, " ", "text/html", null, null)
+					}
+				}
+
 				suspendCoroutine { cont ->
-					webView.webViewClient = ContinuationResumeWebViewClient(cont)
-					webView.loadDataWithBaseURL(baseUrl, " ", "text/html", null, null)
+					webView.evaluateJavascript(script) { result ->
+						cont.resume(result?.takeUnless { it == "null" })
+					}
 				}
-			}
-			suspendCoroutine { cont ->
-				webView.evaluateJavascript(script) { result ->
-					cont.resume(result?.takeUnless { it == "null" })
-				}
+			} finally {
+				webView.reset()
 			}
 		}
 	}
@@ -69,23 +76,18 @@ class WebViewExecutor @Inject constructor(
 					exception.source.getUserAgent()?.let {
 						webView.settings.userAgentString = it
 					}
-					coroutineScope {
-						withTimeout(timeout) {
-							suspendCancellableCoroutine { cont ->
-								webView.webViewClient = CaptchaContinuationClient(
-									cookieJar = cookieJar,
-									targetUrl = exception.url,
-									continuation = cont,
-								)
-								cont.invokeOnCancellation {
-									webView.stopLoadingAsync()
-								}
-								webView.loadUrl(exception.url)
-							}
+					withTimeout(timeout) {
+						suspendCancellableCoroutine { cont ->
+							webView.webViewClient = CaptchaContinuationClient(
+								cookieJar = cookieJar,
+								targetUrl = exception.url,
+								continuation = cont,
+							)
+							webView.loadUrl(exception.url)
 						}
 					}
 				} finally {
-					webView.settings.userAgentString = defaultUserAgent
+					webView.reset()
 				}
 			}
 		}.onFailure { e ->
@@ -117,9 +119,12 @@ class WebViewExecutor @Inject constructor(
 		return repository?.getRequestHeaders()?.get(CommonHeaders.USER_AGENT)
 	}
 
-	private fun WebView.stopLoadingAsync() {
-		Dispatchers.Main.dispatch(EmptyCoroutineContext) {
-			stopLoading()
-		}
+	@MainThread
+	private fun WebView.reset() {
+		stopLoading()
+		webViewClient = WebViewClient()
+		settings.userAgentString = defaultUserAgent
+		loadDataWithBaseURL(null, " ", "text/html", null, null)
+		clearHistory()
 	}
 }
