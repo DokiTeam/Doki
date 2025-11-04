@@ -374,9 +374,7 @@ class ReaderActivity :
 			viewBinding.infoBar.isTimeVisible = isFullscreen
 			updateScrollTimerButton()
 			systemUiController.setSystemUiVisible(isUiVisible || !isFullscreen)
-			val topOffset = if (isUiVisible) viewBinding.appbarTop.height else 0
-			val bottomOffset = if (isUiVisible) (viewBinding.toolbarDocked?.height ?: 0) else 0
-			viewModel.setReaderUiOffsets(topOffset, bottomOffset)
+			viewBinding.root.requestApplyInsets()
 		}
 	}
 
@@ -398,12 +396,14 @@ class ReaderActivity :
 		viewBinding.infoBar.updatePadding(
 			top = systemBars.top,
 		)
-		viewModel.setReaderUiOffsets(
-			(if (viewBinding.appbarTop.isVisible) viewBinding.appbarTop.height else 0) + systemBars.top,
-			(if (viewBinding.toolbarDocked?.isVisible == true) (viewBinding.toolbarDocked?.height ?: 0) else 0) + systemBars.bottom,
+		val innerInsets = Insets.of(
+			systemBars.left,
+			if (viewBinding.appbarTop.isVisible) viewBinding.appbarTop.height else systemBars.top,
+			systemBars.right,
+			viewBinding.toolbarDocked?.takeIf { it.isVisible }?.height ?: systemBars.bottom,
 		)
 		return WindowInsetsCompat.Builder(insets)
-			.setInsets(WindowInsetsCompat.Type.systemBars(), Insets.NONE)
+			.setInsets(WindowInsetsCompat.Type.systemBars(), innerInsets)
 			.build()
 	}
 
