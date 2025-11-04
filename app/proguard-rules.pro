@@ -8,8 +8,7 @@
 	public static void checkParameterIsNotNull(...);
 	public static void checkNotNullParameter(...);
 }
--keep public class ** extends org.dokiteam.doki.core.ui.BaseFragment
--keep class org.dokiteam.doki.core.db.entity.* { *; }
+
 -dontwarn okhttp3.internal.platform.**
 -dontwarn org.conscrypt.**
 -dontwarn org.bouncycastle.**
