@@ -10,7 +10,7 @@ import coil3.asImage
 import coil3.request.Disposable
 import coil3.request.ImageRequest
 import org.dokiteam.doki.R
-import org.dokiteam.doki.core.exceptions.resolve.CaptchaHandler.Companion.ignoreCaptchaErrors
+import org.dokiteam.doki.core.exceptions.resolve.CaptchaHandler.Companion.suppressCaptchaErrors
 import org.dokiteam.doki.core.image.CoilImageView
 import org.dokiteam.doki.core.parser.favicon.faviconUri
 import org.dokiteam.doki.core.util.ext.isAnimationsEnabled
@@ -57,7 +57,7 @@ class FaviconView @JvmOverloads constructor(
 				.fallback(fallbackFactory)
 				.placeholder(placeholderFactory)
 				.mangaSourceExtra(mangaSource)
-				.ignoreCaptchaErrors()
+				.suppressCaptchaErrors()
 				.build(),
 		)
 	}
