@@ -141,7 +141,7 @@
 				android:text="@string/enable_pull_gesture_title"
 				android:textAppearance="?textAppearanceListItem"
 				android:textColor="?colorOnSurfaceVariant"
-				app:drawableStartCompat="@drawable/ic_gesture" />
+				app:drawableStartCompat="@drawable/ic_gesture_vertical" />
 
 			<TextView
 				android:id="@+id/text_sensitivity"
