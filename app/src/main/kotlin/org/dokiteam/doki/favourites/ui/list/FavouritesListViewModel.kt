@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -37,6 +38,8 @@ import org.dokiteam.doki.list.ui.model.EmptyState
 import org.dokiteam.doki.list.ui.model.ListModel
 import org.dokiteam.doki.list.ui.model.LoadingState
 import org.dokiteam.doki.list.ui.model.toErrorState
+import org.dokiteam.doki.local.data.LocalStorageChanges
+import org.dokiteam.doki.local.domain.model.LocalManga
 import org.dokiteam.doki.parsers.model.Manga
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
@@ -52,7 +55,8 @@ class FavouritesListViewModel @Inject constructor(
 	quickFilterFactory: FavoritesListQuickFilter.Factory,
 	settings: AppSettings,
 	mangaDataRepository: MangaDataRepository,
-) : MangaListViewModel(settings, mangaDataRepository), QuickFilterListener {
+	@LocalStorageChanges localStorageChanges: SharedFlow<LocalManga?>,
+) : MangaListViewModel(settings, mangaDataRepository, localStorageChanges), QuickFilterListener {
 
 	val categoryId: Long = savedStateHandle[AppRouter.KEY_ID] ?: NO_ID
 	private val quickFilter = quickFilterFactory.create(categoryId)

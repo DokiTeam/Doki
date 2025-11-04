@@ -3,6 +3,7 @@ package org.dokiteam.doki.picker.ui.manga
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
@@ -19,6 +20,8 @@ import org.dokiteam.doki.list.ui.MangaListViewModel
 import org.dokiteam.doki.list.ui.model.ListHeader
 import org.dokiteam.doki.list.ui.model.ListModel
 import org.dokiteam.doki.list.ui.model.LoadingState
+import org.dokiteam.doki.local.data.LocalStorageChanges
+import org.dokiteam.doki.local.domain.model.LocalManga
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,7 +31,8 @@ class MangaPickerViewModel @Inject constructor(
 	private val historyRepository: HistoryRepository,
 	private val favouritesRepository: FavouritesRepository,
 	private val mangaListMapper: MangaListMapper,
-) : MangaListViewModel(settings, mangaDataRepository) {
+	@LocalStorageChanges localStorageChanges: SharedFlow<LocalManga?>,
+) : MangaListViewModel(settings, mangaDataRepository, localStorageChanges) {
 
 	override val content: StateFlow<List<ListModel>>
 		get() = flow {
