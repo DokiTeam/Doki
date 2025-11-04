@@ -7,6 +7,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import org.dokiteam.doki.core.cache.MemoryContentCache
 import org.dokiteam.doki.core.model.LocalMangaSource
 import org.dokiteam.doki.core.model.MangaSourceInfo
+import org.dokiteam.doki.core.model.TestMangaSource
 import org.dokiteam.doki.core.model.UnknownMangaSource
 import org.dokiteam.doki.core.parser.external.ExternalMangaRepository
 import org.dokiteam.doki.core.parser.external.ExternalMangaSource
@@ -85,9 +86,14 @@ interface MangaRepository {
 
 		private fun createRepository(source: MangaSource): MangaRepository? = when (source) {
 			is MangaParserSource -> ParserMangaRepository(
-				parser = MangaParser(source, loaderContext),
+				parser = loaderContext.newParserInstance(source),
 				cache = contentCache,
 				mirrorSwitcher = mirrorSwitcher,
+			)
+
+			TestMangaSource -> TestMangaRepository(
+				loaderContext = loaderContext,
+				cache = contentCache,
 			)
 
 			is ExternalMangaSource -> if (source.isAvailable(context)) {

@@ -5,6 +5,8 @@ import androidx.preference.Preference
 import leakcanary.LeakCanary
 import org.dokiteam.doki.DokiApp
 import org.dokiteam.doki.R
+import org.dokiteam.doki.core.model.TestMangaSource
+import org.dokiteam.doki.core.nav.router
 import org.dokiteam.doki.core.ui.BasePreferenceFragment
 import org.dokiteam.doki.settings.utils.SplitSwitchPreference
 import org.koitharu.workinspector.WorkInspector
@@ -35,6 +37,11 @@ class DebugSettingsFragment : BasePreferenceFragment(R.string.debug), Preference
 			true
 		}
 
+		KEY_TEST_PARSER -> {
+			router.openList(TestMangaSource, null, null)
+			true
+		}
+
 		else -> super.onPreferenceTreeClick(preference)
 	}
 
@@ -60,5 +67,6 @@ class DebugSettingsFragment : BasePreferenceFragment(R.string.debug), Preference
 
 		const val KEY_LEAK_CANARY = "leak_canary"
 		const val KEY_WORK_INSPECTOR = "work_inspector"
+		const val KEY_TEST_PARSER = "test_parser"
 	}
 }
