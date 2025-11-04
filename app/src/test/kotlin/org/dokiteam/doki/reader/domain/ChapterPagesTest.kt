@@ -3,6 +3,7 @@ package org.dokiteam.doki.reader.domain
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.dokiteam.doki.core.model.TestMangaSource
 import org.dokiteam.doki.parsers.model.MangaParserSource
 import org.dokiteam.doki.reader.ui.pager.ReaderPage
 import kotlin.random.Random
@@ -73,6 +74,6 @@ class ChapterPagesTest {
 		preview = null,
 		chapterId = chapterId,
 		index = Random.nextInt(),
-		source = MangaParserSource.DUMMY,
+		source = TestMangaSource,
 	)
 }
