@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import org.dokiteam.doki.core.db.MangaDatabase
+import org.dokiteam.doki.core.db.TABLE_FAVOURITES
+import org.dokiteam.doki.core.db.TABLE_FAVOURITE_CATEGORIES
 import org.dokiteam.doki.core.db.TABLE_PREFERENCES
 import org.dokiteam.doki.core.db.entity.ContentRating
 import org.dokiteam.doki.core.db.entity.MangaPrefsEntity
@@ -186,6 +188,11 @@ class MangaDataRepository @Inject constructor(
 
 	fun observeOverridesTrigger(emitInitialState: Boolean) = db.invalidationTracker.createFlow(
 		tables = arrayOf(TABLE_PREFERENCES),
+		emitInitialState = emitInitialState,
+	)
+
+	fun observeFavoritesTrigger(emitInitialState: Boolean) = db.invalidationTracker.createFlow(
+		tables = arrayOf(TABLE_FAVOURITES, TABLE_FAVOURITE_CATEGORIES),
 		emitInitialState = emitInitialState,
 	)
 
