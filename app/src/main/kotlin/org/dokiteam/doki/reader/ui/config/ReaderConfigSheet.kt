@@ -87,6 +87,8 @@ class ReaderConfigSheet :
 		binding.buttonVertical.isChecked = mode == ReaderMode.VERTICAL
 		binding.switchDoubleReader.isChecked = settings.isReaderDoubleOnLandscape
 		binding.switchDoubleReader.isEnabled = mode == ReaderMode.STANDARD || mode == ReaderMode.REVERSED
+		binding.switchPullGesture.isChecked = settings.isWebtoonPullGestureEnabled
+		binding.switchPullGesture.isEnabled = mode == ReaderMode.WEBTOON
 
 		binding.textSensitivity.isVisible = settings.isReaderDoubleOnLandscape
 		binding.seekbarSensitivity.isVisible = settings.isReaderDoubleOnLandscape
@@ -101,6 +103,7 @@ class ReaderConfigSheet :
 		binding.buttonScrollTimer.setOnClickListener(this)
 		binding.buttonBookmark.setOnClickListener(this)
 		binding.switchDoubleReader.setOnCheckedChangeListener(this)
+		binding.switchPullGesture.setOnCheckedChangeListener(this)
 
 		binding.seekbarSensitivity.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
 			override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -191,6 +194,10 @@ class ReaderConfigSheet :
 
 				findParentCallback(Callback::class.java)?.onDoubleModeChanged(isChecked)
 			}
+
+			R.id.switch_pull_gesture -> {
+				settings.isWebtoonPullGestureEnabled = isChecked
+			}
 		}
 	}
 
@@ -210,6 +217,7 @@ class ReaderConfigSheet :
 			else -> return
 		}
 		viewBinding?.switchDoubleReader?.isEnabled = newMode == ReaderMode.STANDARD || newMode == ReaderMode.REVERSED
+		viewBinding?.switchPullGesture?.isEnabled = newMode == ReaderMode.WEBTOON
 		if (newMode == mode) {
 			return
 		}
