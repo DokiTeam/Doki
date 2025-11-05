@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.activity.viewModels
@@ -42,6 +43,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.dokiteam.doki.BuildConfig
 import org.dokiteam.doki.R
 import org.dokiteam.doki.backups.ui.periodical.PeriodicalBackupService
 import org.dokiteam.doki.browser.AdListUpdateService
@@ -58,6 +60,7 @@ import org.dokiteam.doki.core.util.ext.consume
 import org.dokiteam.doki.core.util.ext.end
 import org.dokiteam.doki.core.util.ext.observe
 import org.dokiteam.doki.core.util.ext.observeEvent
+import org.dokiteam.doki.core.util.ext.printStackTraceDebug
 import org.dokiteam.doki.core.util.ext.start
 import org.dokiteam.doki.databinding.ActivityMainBinding
 import org.dokiteam.doki.details.service.MangaPrefetchService
@@ -288,7 +291,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		adjustFabVisibility(isResumeEnabled = isEnabled)
 	}
 
-	private fun onFirstStart() {
+	private fun onFirstStart() = try {
 		lifecycleScope.launch(Dispatchers.Main) { // not a default `Main.immediate` dispatcher
 			withContext(Dispatchers.Default) {
 				LocalStorageCleanupWorker.enqueue(applicationContext)
@@ -302,6 +305,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 					startService(Intent(this@MainActivity, AdListUpdateService::class.java))
 				}
 			}
+		}
+	} catch (e: Exception) { // Debugging, can't use BackgroundServiceStartNotAllowedException
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+			e.javaClass.name == "android.app.BackgroundServiceStartNotAllowedException"
+			|| BuildConfig.DEBUG // or use debug app
+		) {
+			e.printStackTraceDebug()
+		} else { // should not null, throw message in logcat
+			Log.e("ServiceStart", "Something went wrong! Use debug app to show detail!")
 		}
 	}
 
