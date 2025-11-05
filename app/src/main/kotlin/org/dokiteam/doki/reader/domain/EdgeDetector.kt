@@ -8,11 +8,9 @@ import android.graphics.Rect
 import androidx.annotation.ColorInt
 import androidx.core.graphics.alpha
 import androidx.core.graphics.blue
-import androidx.core.graphics.get
 import androidx.core.graphics.green
 import androidx.core.graphics.red
 import com.davemorrissey.labs.subscaleview.ImageSource
-import com.davemorrissey.labs.subscaleview.decoder.ImageRegionDecoder
 import com.davemorrissey.labs.subscaleview.decoder.SkiaPooledImageRegionDecoder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -23,7 +21,6 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import org.dokiteam.doki.core.util.SynchronizedSieveCache
-import org.dokiteam.doki.core.util.ext.use
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -46,19 +43,19 @@ class EdgeDetector(private val context: Context) {
 					}
 					val scaleFactor = calculateScaleFactor(size)
 					val sampleSize = (1f / scaleFactor).toInt().coerceAtLeast(1)
-					
+
 					val fullBitmap = decoder.decodeRegion(
-						Rect(0, 0, size.x, size.y), 
-						sampleSize
+						Rect(0, 0, size.x, size.y),
+						sampleSize,
 					)
 					
 					try {
 						val edges = coroutineScope {
 							listOf(
-							async { detectLeftRightEdge(fullBitmap, size, sampleSize, isLeft = true) },
-							async { detectTopBottomEdge(fullBitmap, size, sampleSize, isTop = true) },
-							async { detectLeftRightEdge(fullBitmap, size, sampleSize, isLeft = false) },
-							async { detectTopBottomEdge(fullBitmap, size, sampleSize, isTop = false) },
+								async { detectLeftRightEdge(fullBitmap, size, sampleSize, isLeft = true) },
+								async { detectTopBottomEdge(fullBitmap, size, sampleSize, isTop = true) },
+								async { detectLeftRightEdge(fullBitmap, size, sampleSize, isLeft = false) },
+								async { detectTopBottomEdge(fullBitmap, size, sampleSize, isTop = false) },
 							).awaitAll()
 						}
 						var hasEdges = false

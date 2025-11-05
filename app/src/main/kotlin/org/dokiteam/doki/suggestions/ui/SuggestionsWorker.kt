@@ -46,7 +46,6 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import org.dokiteam.doki.R
 import org.dokiteam.doki.core.exceptions.CloudFlareException
-import org.dokiteam.doki.core.exceptions.CloudFlareProtectedException
 import org.dokiteam.doki.core.exceptions.resolve.CaptchaHandler
 import org.dokiteam.doki.core.model.distinctById
 import org.dokiteam.doki.core.model.getLocale
