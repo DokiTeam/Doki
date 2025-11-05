@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.activity.viewModels
@@ -43,7 +42,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.dokiteam.doki.BuildConfig
 import org.dokiteam.doki.R
 import org.dokiteam.doki.backups.ui.periodical.PeriodicalBackupService
 import org.dokiteam.doki.browser.AdListUpdateService
@@ -306,15 +304,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 				}
 			}
 		}
-	} catch (e: Exception) { // Debugging, can't use BackgroundServiceStartNotAllowedException
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-			e.javaClass.name == "android.app.BackgroundServiceStartNotAllowedException"
-			|| BuildConfig.DEBUG // or use debug app
-		) {
-			e.printStackTraceDebug()
-		} else { // should not null, throw message in logcat
-			Log.e("ServiceStart", "Something went wrong! Use debug app to show detail!")
-		}
+	} catch (e: IllegalStateException) {
+		e.printStackTraceDebug()
 	}
 
 	private fun adjustAppbar(topFragment: Fragment) {
