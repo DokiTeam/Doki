@@ -11,6 +11,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.dokiteam.doki.R
 import org.dokiteam.doki.core.nav.router
 import org.dokiteam.doki.core.prefs.AppSettings
+import org.dokiteam.doki.core.prefs.TriStateOption
 import org.dokiteam.doki.core.ui.BasePreferenceFragment
 import org.dokiteam.doki.core.util.ext.getQuantityStringSafe
 import org.dokiteam.doki.core.util.ext.observe
@@ -31,6 +32,10 @@ class SourcesSettingsFragment : BasePreferenceFragment(R.string.remote_sources),
 			entries = SourcesSortOrder.entries.map { context.getString(it.titleResId) }.toTypedArray()
 			setDefaultValueCompat(SourcesSortOrder.MANUAL.name)
 		}
+        findPreference<ListPreference>(AppSettings.KEY_INCOGNITO_NSFW)?.run {
+            entryValues = TriStateOption.entries.names()
+            setDefaultValueCompat(TriStateOption.ASK.name)
+        }
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
