@@ -3,6 +3,7 @@ package org.dokiteam.doki.details.ui.pager.chapters
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.view.ActionMode
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -11,6 +12,7 @@ import org.dokiteam.doki.core.model.LocalMangaSource
 import org.dokiteam.doki.core.nav.AppRouter
 import org.dokiteam.doki.core.ui.list.BaseListSelectionCallback
 import org.dokiteam.doki.core.ui.list.ListSelectionController
+import org.dokiteam.doki.core.util.ext.printStackTraceDebug
 import org.dokiteam.doki.core.util.ext.toCollection
 import org.dokiteam.doki.core.util.ext.toSet
 import org.dokiteam.doki.details.ui.pager.ChaptersPagesViewModel
@@ -78,11 +80,20 @@ class ChaptersSelectionCallback(
 					ids.size == manga.chapters?.size -> viewModel.deleteLocal()
 					else -> {
 						LocalChaptersRemoveService.start(recyclerView.context, manga, ids.toSet())
-						Snackbar.make(
-							recyclerView,
-							R.string.chapters_will_removed_background,
-							Snackbar.LENGTH_LONG,
-						).show()
+						try {
+							Snackbar.make(
+								recyclerView,
+								R.string.chapters_will_removed_background,
+								Snackbar.LENGTH_LONG,
+							).show()
+						} catch (e: IllegalArgumentException) {
+							e.printStackTraceDebug()
+							Toast.makeText(
+								recyclerView.context,
+								R.string.chapters_will_removed_background,
+								Toast.LENGTH_SHORT,
+							).show()
+						}
 					}
 				}
 				mode?.finish()
