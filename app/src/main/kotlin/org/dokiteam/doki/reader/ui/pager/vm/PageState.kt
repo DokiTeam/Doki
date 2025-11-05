@@ -1,5 +1,6 @@
 package org.dokiteam.doki.reader.ui.pager.vm
 
+import android.net.Uri
 import com.davemorrissey.labs.subscaleview.ImageSource
 
 sealed class PageState {
@@ -13,6 +14,7 @@ sealed class PageState {
 
 	data class Loaded(
 		val source: ImageSource,
+        val uri: Uri,
 		val isConverted: Boolean,
 	) : PageState()
 
@@ -20,6 +22,7 @@ sealed class PageState {
 
 	data class Shown(
 		val source: ImageSource,
+        val uri: Uri,
 		val isConverted: Boolean,
 	) : PageState()
 

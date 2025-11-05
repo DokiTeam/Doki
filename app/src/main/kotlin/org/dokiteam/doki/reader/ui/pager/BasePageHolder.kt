@@ -11,6 +11,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
+import coil3.request.ImageRequest
 import com.davemorrissey.labs.subscaleview.DefaultOnImageEventListener
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import kotlinx.coroutines.Dispatchers
@@ -18,9 +19,11 @@ import kotlinx.coroutines.launch
 import org.dokiteam.doki.BuildConfig
 import org.dokiteam.doki.R
 import org.dokiteam.doki.core.exceptions.resolve.ExceptionResolver
+import org.dokiteam.doki.core.image.CoilImageView
 import org.dokiteam.doki.core.os.NetworkState
 import org.dokiteam.doki.core.ui.list.lifecycle.LifecycleAwareViewHolder
 import org.dokiteam.doki.core.util.ext.getDisplayMessage
+import org.dokiteam.doki.core.util.ext.isAnimatedImage
 import org.dokiteam.doki.core.util.ext.isLowRamDevice
 import org.dokiteam.doki.core.util.ext.isSerializable
 import org.dokiteam.doki.core.util.ext.observe
@@ -50,6 +53,7 @@ abstract class BasePageHolder<B : ViewBinding>(
 	)
 	protected val bindingInfo = LayoutPageInfoBinding.bind(binding.root)
 	protected abstract val ssiv: SubsamplingScaleImageView
+    protected abstract val animatedImageView: CoilImageView?
 
 	protected val settings: ReaderSettings
 		get() = viewModel.settingsProducer.value
@@ -92,10 +96,15 @@ abstract class BasePageHolder<B : ViewBinding>(
 		ssiv.applyDownSampling(isResumed())
 	}
 
-	fun reloadImage() {
-		val source = (viewModel.state.value as? PageState.Shown)?.source ?: return
-		ssiv.setImage(source)
-	}
+    fun reloadImage() {
+        val state = viewModel.state.value as? PageState.Shown ?: return
+        val uri = state.uri
+        if (uri.isAnimatedImage(context) && animatedImageView != null) {
+            showAnimatedImage(uri)
+        } else {
+            ssiv.setImage(state.source)
+        }
+    }
 
 	fun bind(data: ReaderPage) {
 		boundData = data
@@ -139,6 +148,7 @@ abstract class BasePageHolder<B : ViewBinding>(
 	open fun onRecycled() {
 		viewModel.onRecycle()
 		ssiv.recycle()
+        animatedImageView?.disposeImage()
 	}
 
 	override fun onTrimMemory(level: Int) {
@@ -182,7 +192,12 @@ abstract class BasePageHolder<B : ViewBinding>(
 
 			is PageState.Loaded -> {
 				bindingInfo.textViewStatus.setText(R.string.preparing_)
-				ssiv.setImage(state.source)
+                val uri = state.uri
+                if (uri.isAnimatedImage(context) && animatedImageView != null) {
+                    showAnimatedImage(uri)
+                } else {
+                    showStaticImage(state.source)
+                }
 			}
 
 			is PageState.Loading -> {
@@ -194,6 +209,35 @@ abstract class BasePageHolder<B : ViewBinding>(
 			is PageState.Shown -> Unit
 		}
 	}
+
+    private fun showAnimatedImage(uri: android.net.Uri) {
+        animatedImageView?.let { imageView ->
+            ssiv.isVisible = false
+            imageView.isVisible = true
+            imageView.colorFilter = settings.colorFilter?.toColorFilter()
+            imageView.addImageRequestListener(object : ImageRequest.Listener {
+                override fun onSuccess(request: ImageRequest, result: coil3.request.SuccessResult) {
+                    imageView.removeImageRequestListener(this)
+                    viewModel.onImageLoaded()
+                }
+
+                override fun onError(request: ImageRequest, result: coil3.request.ErrorResult) {
+                    imageView.removeImageRequestListener(this)
+                    viewModel.onImageLoadError(result.throwable)
+                }
+            })
+            imageView.setImageAsync(uri.toString())
+        }
+    }
+
+    private fun showStaticImage(source: com.davemorrissey.labs.subscaleview.ImageSource) {
+        animatedImageView?.let { imageView ->
+            imageView.isVisible = false
+            imageView.disposeImage()
+        }
+        ssiv.isVisible = true
+        ssiv.setImage(source)
+    }
 
 	protected fun SubsamplingScaleImageView.applyDownSampling(isForeground: Boolean) {
 		downSampling = when {

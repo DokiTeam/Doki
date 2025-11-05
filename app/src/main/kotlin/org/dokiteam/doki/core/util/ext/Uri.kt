@@ -1,8 +1,11 @@
 package org.dokiteam.doki.core.util.ext
 
+import android.content.Context
 import android.net.Uri
+import androidx.core.net.toFile
 import androidx.core.net.toUri
 import okio.Path
+import org.dokiteam.doki.core.util.MimeTypes
 import java.io.File
 
 const val URI_SCHEME_ZIP = "file+zip"
@@ -35,4 +38,52 @@ fun File.toUri(fragment: String?): Uri = toUri().run {
 	} else {
 		this
 	}
+}
+
+fun Uri.isAnimatedImage(context: Context): Boolean {
+    val mimeType = when {
+        isFileUri() -> {
+            try {
+                toFile().let { MimeTypes.probeMimeType(it) }
+            } catch (_: Exception) {
+                null
+            }
+        }
+        else -> {
+            context.contentResolver.getType(this)?.toMimeTypeOrNull()
+        }
+    }
+
+    return when {
+        mimeType?.type != "image" -> false
+        mimeType.subtype == "gif" -> true
+        mimeType.subtype == "webp" -> {
+            try {
+                val inputStream = when {
+                    isFileUri() -> toFile().inputStream()
+                    else -> context.contentResolver.openInputStream(this)
+                }
+
+                inputStream?.use { stream ->
+                    val buffer = ByteArray(16)
+                    if (stream.read(buffer) < 16) return false
+
+                    if (buffer[12] == 'V'.code.toByte() &&
+                        buffer[13] == 'P'.code.toByte() &&
+                        buffer[14] == '8'.code.toByte() &&
+                        buffer[15] == 'X'.code.toByte()) {
+
+                        val flags = ByteArray(4)
+                        if (stream.read(flags) < 4) return false
+
+                        return (flags[0].toInt() and 0x02) != 0
+                    }
+                    false
+                } ?: false
+            } catch (_: Exception) {
+                false
+            }
+        }
+        else -> false
+    }
 }

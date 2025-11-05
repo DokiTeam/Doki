@@ -26,6 +26,7 @@ class WebtoonHolder(
 ) {
 
 	override val ssiv = binding.ssiv
+    override val animatedImageView = binding.imageViewAnimated
 
 	private var scrollToRestore = 0
 
