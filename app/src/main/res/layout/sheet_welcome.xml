@@ -16,8 +16,9 @@
 		android:id="@+id/scrollView"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:clipToPadding="false"
-		android:scrollIndicators="top">
+		android:clipToPadding="false">
+        <!-- This won't compatible with Android API 21-->
+        <!-- android:scrollIndicators="top"-->
 
 		<LinearLayout
 			android:layout_width="match_parent"
@@ -63,6 +64,14 @@
 						android:layout_height="wrap_content"
 						android:text="@string/sync_auth"
 						app:chipIcon="@drawable/ic_sync" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_directories"
+                        style="@style/Widget.Kotatsu.Chip.Assist"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/local_manga_directories"
+                        app:chipIcon="@drawable/ic_storage" />
 
 				</com.google.android.material.chip.ChipGroup>
 
