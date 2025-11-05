@@ -883,5 +883,4 @@
     <string name="available_pattern">%1$s disponível</string>
     <string name="pinned_sources_only">Yalnızca sabitlenen kaynaklar</string>
     <string name="hide_empty_sources">Boş kaynakları gizle</string>
-    <string name="auto_double_foldable">Otomatik İki Sayfa Katlanabilir</string>
 </resources>
