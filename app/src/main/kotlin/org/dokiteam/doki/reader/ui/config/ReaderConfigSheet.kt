@@ -90,6 +90,8 @@ class ReaderConfigSheet :
 		binding.buttonVertical.isChecked = mode == ReaderMode.VERTICAL
 		binding.switchDoubleReader.isChecked = settings.isReaderDoubleOnLandscape
 		binding.switchDoubleReader.isEnabled = mode == ReaderMode.STANDARD || mode == ReaderMode.REVERSED
+
+        // Ignore commit: Move pull gesture option to reader settings
 		binding.switchPullGesture.isChecked = settings.isWebtoonPullGestureEnabled
 		binding.switchPullGesture.isEnabled = mode == ReaderMode.WEBTOON
 
