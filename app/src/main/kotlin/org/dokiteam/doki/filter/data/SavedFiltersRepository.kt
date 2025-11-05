@@ -1,6 +1,7 @@
 package org.dokiteam.doki.filter.data
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.core.content.edit
 import dagger.Reusable
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -17,6 +18,7 @@ import org.dokiteam.doki.core.util.ext.observeChanges
 import org.dokiteam.doki.core.util.ext.printStackTraceDebug
 import org.dokiteam.doki.parsers.model.MangaListFilter
 import org.dokiteam.doki.parsers.model.MangaSource
+import java.io.File
 import javax.inject.Inject
 
 @Reusable
@@ -96,7 +98,10 @@ class SavedFiltersRepository @Inject constructor(
         }
     }
 
-    private fun getPrefs(source: MangaSource) = context.getSharedPreferences(source.name, Context.MODE_PRIVATE)
+    private fun getPrefs(source: MangaSource): SharedPreferences {
+        val key = source.name.replace(File.separatorChar, '$')
+        return context.getSharedPreferences(key, Context.MODE_PRIVATE)
+    }
 
     private companion object {
 
