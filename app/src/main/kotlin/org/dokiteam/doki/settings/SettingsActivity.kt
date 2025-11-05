@@ -39,7 +39,7 @@ import org.dokiteam.doki.settings.sources.SourceSettingsFragment
 import org.dokiteam.doki.settings.sources.SourcesSettingsFragment
 import org.dokiteam.doki.settings.sources.manage.SourcesManageFragment
 import org.dokiteam.doki.settings.tracker.TrackerSettingsFragment
-import org.dokiteam.doki.settings.userdata.UserDataSettingsFragment
+import org.dokiteam.doki.settings.userdata.BackupsSettingsFragment
 
 @AndroidEntryPoint
 class SettingsActivity :
@@ -146,7 +146,7 @@ class SettingsActivity :
 		val fragment = when (intent?.action) {
 			AppRouter.ACTION_READER -> ReaderSettingsFragment()
 			AppRouter.ACTION_SUGGESTIONS -> SuggestionsSettingsFragment()
-			AppRouter.ACTION_HISTORY -> UserDataSettingsFragment()
+			AppRouter.ACTION_HISTORY -> BackupsSettingsFragment()
 			AppRouter.ACTION_TRACKER -> TrackerSettingsFragment()
 			AppRouter.ACTION_PERIODIC_BACKUP -> PeriodicalBackupSettingsFragment()
 			AppRouter.ACTION_SOURCES -> SourcesSettingsFragment()
