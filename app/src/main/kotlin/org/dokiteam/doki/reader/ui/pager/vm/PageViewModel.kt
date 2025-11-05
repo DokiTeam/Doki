@@ -82,7 +82,7 @@ class PageViewModel(
 	override fun onImageLoaded() {
 		state.update { currentState ->
 			if (currentState is PageState.Loaded) {
-				PageState.Shown(currentState.source, currentState.isConverted)
+                PageState.Shown(currentState.source, currentState.uri, currentState.isConverted)
 			} else {
 				currentState
 			}
@@ -94,8 +94,8 @@ class PageViewModel(
 
 		state.update { currentState ->
 			if (currentState is PageState.Loaded) {
-				val uri = (currentState.source as? ImageSource.Uri)?.uri
-				if (!currentState.isConverted && uri != null && e is IOException) {
+                val uri = currentState.uri
+                if (!currentState.isConverted && e is IOException) {
 					tryConvert(uri, e)
 					PageState.Converting()
 				} else {
@@ -119,7 +119,7 @@ class PageViewModel(
 				} else {
 					null
 				}
-				state.value = PageState.Loaded(newUri.toImageSource(cachedBounds), isConverted = true)
+                state.value = PageState.Loaded(newUri.toImageSource(cachedBounds), newUri, isConverted = true)
 			} catch (ce: CancellationException) {
 				throw ce
 			} catch (e2: Throwable) {
@@ -150,7 +150,7 @@ class PageViewModel(
 			} else {
 				null
 			}
-			state.value = PageState.Loaded(uri.toImageSource(cachedBounds), isConverted = false)
+            state.value = PageState.Loaded(uri.toImageSource(cachedBounds), uri, isConverted = false)
 		} catch (e: CancellationException) {
 			throw e
 		} catch (e: Throwable) {

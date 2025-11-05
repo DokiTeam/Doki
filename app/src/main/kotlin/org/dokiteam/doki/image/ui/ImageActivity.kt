@@ -1,5 +1,6 @@
 package org.dokiteam.doki.image.ui
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
@@ -11,12 +12,15 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import coil3.Image
 import coil3.ImageLoader
+import coil3.asDrawable
 import coil3.request.CachePolicy
 import coil3.request.ErrorResult
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
 import coil3.request.lifecycle
+import coil3.target.Target
 import coil3.target.GenericViewTarget
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
@@ -37,6 +41,7 @@ import org.dokiteam.doki.core.util.ext.getDisplayIcon
 import org.dokiteam.doki.core.util.ext.getDisplayMessage
 import org.dokiteam.doki.core.util.ext.getParcelableExtraCompat
 import org.dokiteam.doki.core.util.ext.getThemeColor
+import org.dokiteam.doki.core.util.ext.isAnimatedImage
 import org.dokiteam.doki.core.util.ext.mangaSourceExtra
 import org.dokiteam.doki.core.util.ext.observe
 import org.dokiteam.doki.core.util.ext.observeEvent
@@ -122,14 +127,15 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(),
 	}
 
 	private fun loadImage() {
+        val dataUri = intent.data
 		ImageRequest.Builder(this)
-			.data(intent.data)
+			.data(dataUri)
 			.memoryCacheKey(intent.getParcelableExtraCompat<CoilMemoryCacheKey>(AppRouter.KEY_PREVIEW)?.data)
 			.memoryCachePolicy(CachePolicy.READ_ONLY)
 			.lifecycle(this)
 			.listener(this)
 			.mangaSourceExtra(MangaSource(intent.getStringExtra(AppRouter.KEY_SOURCE)))
-			.target(SsivTarget(viewBinding.ssiv))
+            .listener(this)
 			.enqueueWith(coil)
 	}
 
@@ -156,30 +162,40 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(),
 		}
 	}
 
-	private class SsivTarget(
-		override val view: SubsamplingScaleImageView,
-	) : GenericViewTarget<SubsamplingScaleImageView>() {
+    private class DualImageTarget(
+        private val ssiv: SubsamplingScaleImageView,
+        private val animatedImageView: org.dokiteam.doki.core.image.CoilImageView,
+        private val activity: ImageActivity,
+        private val dataUri: Uri?
+    ) : Target {
 
-		override var drawable: Drawable? = null
-			set(value) {
-				field = value
-				setImageDrawable(value)
-			}
+        override fun onSuccess(result: Image) {
+            val drawable = result.asDrawable(activity.resources)
+            val isAnimated = isAnimatedDrawable(drawable, dataUri, activity) == true
 
-		override fun equals(other: Any?): Boolean {
-			return (this === other) || (other is SsivTarget && view == other.view)
-		}
-
-		override fun hashCode() = view.hashCode()
-
-		override fun toString() = "SsivTarget(view=$view)"
-
-		private fun setImageDrawable(drawable: Drawable?) {
-			if (drawable != null) {
-				view.setImage(ImageSource.bitmap(drawable.toBitmap()))
-			} else {
-				view.recycle()
+            if (isAnimated) {
+                ssiv.isVisible = false
+                ssiv.recycle()
+                animatedImageView.isVisible = true
+                animatedImageView.setImageDrawable(drawable)
+            } else {
+                animatedImageView.isVisible = false
+                animatedImageView.disposeImage()
+                ssiv.isVisible = true
+                ssiv.setImage(ImageSource.bitmap(drawable.toBitmap()))
 			}
 		}
+
+        override fun onError(error: Image?) {
+            ssiv.recycle()
+            animatedImageView.disposeImage()
+		}
+
+        private fun isAnimatedDrawable(drawable: Drawable, uri: Uri?, context: Context): Boolean {
+            if (drawable is android.graphics.drawable.AnimatedImageDrawable) {
+                return true
+            }
+            return uri != null && uri.isAnimatedImage(context)
+        }
 	}
 }
