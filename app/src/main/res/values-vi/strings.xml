@@ -406,7 +406,7 @@
     <string name="reader_info_pattern">Chương %1$d/%2$d - Trang %3$d/%4$d</string>
     <string name="memory_usage_pattern">%s - %s</string>
     <string name="web_view_unavailable">WebView hiện không có sẵn: Kiểm tra xem ứng dụng WebView được cài chưa</string>
-    <string name="manga_error_description_pattern">Chi tiết lỗi: &lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Hãy thử &lt;a href=%2$s&gt;mở manga trong trình duyệt web&lt;/a&gt; để đảm bảo rằng manga này có trong nguồn&lt;br&gt;2. Hãy chắc chắn rằng bạn đang dùng &lt;a href=doki://about&gt;bản mới nhất của Kotatsu&lt;/a&gt;&lt;br&gt;3. Nếu đã đáp ứng các yêu cầu trên, gửi báo cáo lỗi lên nhà phát triển.</string>
+    <string name="manga_error_description_pattern">Chi tiết lỗi: &lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Hãy thử &lt;a href=%2$s&gt;mở manga trong trình duyệt web&lt;/a&gt; để đảm bảo rằng manga này có trong nguồn&lt;br&gt;2. Hãy chắc chắn rằng bạn đang dùng &lt;a href=doki://about&gt;bản mới nhất của Doki&lt;/a&gt;&lt;br&gt;3. Nếu đã đáp ứng các yêu cầu trên, gửi báo cáo lỗi lên nhà phát triển.</string>
     <string name="text_history_holder_secondary">Tìm truyện để đọc trong phần «Khám phá»</string>
     <string name="this_month">Tháng này</string>
     <string name="tracker_wifi_only_summary">Không kiểm tra các chương mới bằng kết nối mạng có đo lường</string>
@@ -842,7 +842,7 @@
 	<string name="discord_rpc">Tích hợp Discord Rich Presence (Discord RPC)</string>
 	<string name="discord_token">Token của Discord</string>
 	<string name="discord_token_summary">Nhập Token vào để kích hoạt Discord Rich Presence</string>
-	<string name="discord_token_description">Nhập Token do Discord gán hoặc %s tại đây để Kotatsu tự động trích xuất Token của bạn từ trình duyệt</string>
+	<string name="discord_token_description">Nhập Token do Discord gán hoặc %s tại đây để Doki tự động trích xuất Token của bạn từ trình duyệt</string>
 	<string name="discord_token_hint">Dán Token của bạn tại đây</string>
 	<string name="discord_rpc_summary">Hiển thị tiến trình đọc truyện của bạn trên Discord</string>
 	<string name="obtain">Đã nhận được</string>
@@ -864,4 +864,22 @@
 	<string name="pull_bottom_no_next">Không còn chương nào để xem tiếp</string>
 	<string name="enable_pull_gesture_title">Bật cử chỉ kéo - thả</string>
 	<string name="enable_pull_gesture_summary">Sử dụng cử chỉ tay kéo - thả để chuyển chương trong chế độ đọc Webtoon</string>
+    <string name="saved_filters">Lưu bộ lọc tìm kiếm</string>
+    <string name="enter_name">Hãy điền tên</string>
+    <string name="two_page_scroll_sensitivity">Độ nhạy khi cuộn hai trang</string>
+    <string name="reader_chapter_toast">Hiện thông báo chuyển chương</string>
+    <string name="reader_chapter_toast_summary">Hiển thị một bong bóng nổi nho nhỏ ở phía dưới màn hình cùng với tên của chương truyện khi bạn đọc sang một chương truyện mới</string>
+    <string name="rename">Đặt tên</string>
+    <string name="save_filter">Lưu bộ lọc</string>
+    <string name="overwrite">Đè lên</string>
+    <string name="filter_overwrite_confirm">Một bộ lộc có tên là \"%s\" đã tồn tại trước đó. Bạn có muốn ghi đè nó lên không?</string>
+    <string name="storage_and_network">Lưu trữ và mạng</string>
+    <string name="create_or_restore_backup">Tạo hoặc khôi phục từ một bản sao lưu</string>
+    <string name="data_removal">Xoá dữ liệu</string>
+    <string name="privacy">Quyền riêng tư</string>
+    <string name="source_broken_warning">Nguồn đọc này đã được gắn là \"Không còn sử dụng được\". Một vài tính năng có thể sẽ không hoạt động</string>
+    <string name="frequency_every_6_hours">6 tiếng một lần</string>
+    <string name="download_default_directory">Đường dẫn mặc định để tải truyện về thiết bị</string>
+    <string name="private_app_directory_warning">Đường dẫn này với tất cả dữ liệu của ứng dụng sẽ bị xóa nếu bạn gỡ ứng dụng Doki</string>
+    <string name="available_pattern">Hiện có sẵn %1$s</string>
 </resources>
