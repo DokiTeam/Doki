@@ -44,6 +44,7 @@ import org.dokiteam.doki.list.ui.model.toErrorState
 import org.dokiteam.doki.local.data.LocalStorageChanges
 import org.dokiteam.doki.local.domain.model.LocalManga
 import org.dokiteam.doki.parsers.model.Manga
+import org.dokiteam.doki.parsers.model.MangaParserSource
 import org.dokiteam.doki.parsers.util.sizeOrZero
 import javax.inject.Inject
 
@@ -65,6 +66,7 @@ open class RemoteListViewModel @Inject constructor(
 	val source = MangaSource(savedStateHandle[RemoteListFragment.ARG_SOURCE])
 	val isRandomLoading = MutableStateFlow(false)
 	val onOpenManga = MutableEventFlow<Manga>()
+    val onSourceBroken = MutableEventFlow<Unit>()
 
 	protected val repository = mangaRepositoryFactory.create(source)
 	private val mangaList = MutableStateFlow<List<Manga>?>(null)
@@ -117,6 +119,11 @@ open class RemoteListViewModel @Inject constructor(
 		launchJob(Dispatchers.Default) {
 			sourcesRepository.trackUsage(source)
 		}
+
+        if (source is MangaParserSource && source.isBroken) {
+            // Just notify one. Will show reason in future
+            onSourceBroken.call(Unit)
+        }
 	}
 
 	override fun onRefresh() {
