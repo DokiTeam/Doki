@@ -26,7 +26,6 @@ import org.dokiteam.doki.core.util.ext.getDisplayMessage
 import org.dokiteam.doki.core.util.ext.isAnimatedImage
 import org.dokiteam.doki.core.util.ext.isLowRamDevice
 import org.dokiteam.doki.core.util.ext.isSerializable
-import org.dokiteam.doki.core.util.ext.mangaSourceExtra
 import org.dokiteam.doki.core.util.ext.observe
 import org.dokiteam.doki.databinding.LayoutPageInfoBinding
 import org.dokiteam.doki.parsers.util.ifZero

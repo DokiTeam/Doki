@@ -45,7 +45,7 @@ fun Uri.isAnimatedImage(context: Context): Boolean {
         isFileUri() -> {
             try {
                 toFile().let { MimeTypes.probeMimeType(it) }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 null
             }
         }
@@ -53,10 +53,37 @@ fun Uri.isAnimatedImage(context: Context): Boolean {
             context.contentResolver.getType(this)?.toMimeTypeOrNull()
         }
     }
-    if (mimeType?.type != "image") return false
-    return when (mimeType.subtype) {
-        "gif" -> true
-        "webp" -> false
+
+    return when {
+        mimeType?.type != "image" -> false
+        mimeType.subtype == "gif" -> true
+        mimeType.subtype == "webp" -> {
+            try {
+                val inputStream = when {
+                    isFileUri() -> toFile().inputStream()
+                    else -> context.contentResolver.openInputStream(this)
+                }
+
+                inputStream?.use { stream ->
+                    val buffer = ByteArray(16)
+                    if (stream.read(buffer) < 16) return false
+
+                    if (buffer[12] == 'V'.code.toByte() &&
+                        buffer[13] == 'P'.code.toByte() &&
+                        buffer[14] == '8'.code.toByte() &&
+                        buffer[15] == 'X'.code.toByte()) {
+
+                        val flags = ByteArray(4)
+                        if (stream.read(flags) < 4) return false
+
+                        return (flags[0].toInt() and 0x02) != 0
+                    }
+                    false
+                } ?: false
+            } catch (_: Exception) {
+                false
+            }
+        }
         else -> false
     }
 }

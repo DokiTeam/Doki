@@ -1,7 +1,5 @@
 package org.dokiteam.doki.image.ui
 
-import android.content.Context
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -21,7 +19,6 @@ import coil3.request.ImageRequest
 import coil3.request.SuccessResult
 import coil3.request.lifecycle
 import coil3.target.Target
-import coil3.target.GenericViewTarget
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.google.android.material.snackbar.Snackbar
@@ -66,6 +63,10 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(),
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityImageBinding.inflate(layoutInflater))
+
+        androidx.appcompat.widget.TooltipCompat.setTooltipText(viewBinding.buttonBack, getString(R.string.back))
+        androidx.appcompat.widget.TooltipCompat.setTooltipText(viewBinding.buttonMenu, getString(R.string.show_menu))
+
 		viewBinding.buttonBack.setOnClickListener(this)
 		viewBinding.buttonMenu.setOnClickListener(this)
 
@@ -166,12 +167,11 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(),
         private val ssiv: SubsamplingScaleImageView,
         private val animatedImageView: org.dokiteam.doki.core.image.CoilImageView,
         private val activity: ImageActivity,
-        private val dataUri: Uri?
+        private val dataUri: Uri?,
     ) : Target {
-
         override fun onSuccess(result: Image) {
             val drawable = result.asDrawable(activity.resources)
-            val isAnimated = isAnimatedDrawable(drawable, dataUri, activity) == true
+            val isAnimated = dataUri?.isAnimatedImage(activity) == true
 
             if (isAnimated) {
                 ssiv.isVisible = false
@@ -183,19 +183,12 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(),
                 animatedImageView.disposeImage()
                 ssiv.isVisible = true
                 ssiv.setImage(ImageSource.bitmap(drawable.toBitmap()))
-			}
-		}
+            }
+        }
 
         override fun onError(error: Image?) {
             ssiv.recycle()
             animatedImageView.disposeImage()
-		}
-
-        private fun isAnimatedDrawable(drawable: Drawable, uri: Uri?, context: Context): Boolean {
-            if (drawable is android.graphics.drawable.AnimatedImageDrawable) {
-                return true
-            }
-            return uri != null && uri.isAnimatedImage(context)
         }
-	}
+    }
 }
