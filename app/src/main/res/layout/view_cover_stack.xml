@@ -15,7 +15,7 @@
 		android:backgroundTintMode="src_atop"
 		android:scaleType="centerCrop"
 		app:fallbackDrawable="@android:color/transparent"
-		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
+		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Doki.Cover.Small"
 		app:tintMode="src_atop"
 		tools:backgroundTint="#99FFFFFF"
 		tools:src="@tools:sample/backgrounds/scenic"
@@ -30,7 +30,7 @@
 		android:backgroundTintMode="src_atop"
 		android:scaleType="centerCrop"
 		app:fallbackDrawable="@android:color/transparent"
-		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
+		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Doki.Cover.Small"
 		app:tintMode="src_atop"
 		tools:backgroundTint="#4DFFFFFF"
 		tools:src="@tools:sample/backgrounds/scenic"
@@ -45,7 +45,7 @@
 		android:backgroundTintMode="src_atop"
 		android:scaleType="centerCrop"
 		app:fallbackDrawable="@android:color/transparent"
-		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
+		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Doki.Cover.Small"
 		tools:src="@tools:sample/backgrounds/scenic" />
 
 </merge>

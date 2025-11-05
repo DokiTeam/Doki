@@ -63,7 +63,7 @@ class TwoLinesItemView @JvmOverloads constructor(
 			set = attrs,
 			attrs = R.styleable.TwoLinesItemView,
 			defStyleAttr = defStyleAttr,
-			defStyleRes = R.style.Widget_Kotatsu_TwoLinesItemView,
+			defStyleRes = R.style.Widget_Doki_TwoLinesItemView,
 		) {
 			val itemRippleColor = getRippleColor(context)
 			val shape = createShapeDrawable(this)

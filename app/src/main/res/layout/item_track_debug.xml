@@ -17,7 +17,7 @@
 		android:layout_marginTop="16dp"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
-		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
+		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Doki.Cover.Small"
 		tools:src="@tools:sample/backgrounds/scenic" />
 
 	<TextView

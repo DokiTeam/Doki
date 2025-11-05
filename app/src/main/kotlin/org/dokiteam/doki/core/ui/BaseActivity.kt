@@ -63,7 +63,7 @@ abstract class BaseActivity<B : ViewBinding> :
 		isAmoledTheme = settings.isAmoledTheme
 		setTheme(settings.colorScheme.styleResId)
 		if (isAmoledTheme) {
-			setTheme(R.style.ThemeOverlay_Kotatsu_Amoled)
+			setTheme(R.style.ThemeOverlay_Doki_Amoled)
 		}
 		putDataToExtras(intent)
 		exceptionResolver = entryPoint.exceptionResolverFactory.create(this)

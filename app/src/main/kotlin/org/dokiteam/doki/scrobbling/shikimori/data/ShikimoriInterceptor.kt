@@ -9,7 +9,7 @@ import org.dokiteam.doki.scrobbling.common.domain.ScrobblerAuthRequiredException
 import org.dokiteam.doki.scrobbling.common.domain.model.ScrobblerService
 import java.net.HttpURLConnection
 
-private const val USER_AGENT_SHIKIMORI = "Kotatsu"
+private const val USER_AGENT_SHIKIMORI = "Doki"
 
 class ShikimoriInterceptor(private val storage: ScrobblerStorage) : Interceptor {
 

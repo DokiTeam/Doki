@@ -51,7 +51,7 @@
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toTopOf="parent"
 				app:layout_constraintWidth_percent="0.3"
-				app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
+				app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Doki.Cover"
 				tools:background="@tools:sample/backgrounds/scenic[5]"
 				tools:ignore="ContentDescription,UnusedAttribute" />
 

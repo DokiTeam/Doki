@@ -15,7 +15,7 @@ import org.dokiteam.doki.R
 import org.dokiteam.doki.core.ui.AlertDialogFragment
 import org.dokiteam.doki.core.ui.widgets.SegmentedBarView
 import org.dokiteam.doki.core.util.FileSize
-import org.dokiteam.doki.core.util.KotatsuColors
+import org.dokiteam.doki.core.util.DokiColors
 import org.dokiteam.doki.core.util.ext.getQuantityStringSafe
 import org.dokiteam.doki.core.util.ext.observe
 import org.dokiteam.doki.core.util.ext.observeEvent
@@ -86,7 +86,7 @@ class LocalInfoDialog : AlertDialogFragment<DialogLocalInfoBinding>(), View.OnCl
 		val total = size + available
 		val segment = SegmentedBarView.Segment(
 			percent = (size.toDouble() / total.toDouble()).toFloat(),
-			color = KotatsuColors.segmentColor(view.context, appcompatR.attr.colorPrimary),
+			color = DokiColors.segmentColor(view.context, appcompatR.attr.colorPrimary),
 		)
 		requireViewBinding().labelUsed.text = view.context.getString(
 			R.string.memory_usage_pattern,

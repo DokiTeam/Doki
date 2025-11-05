@@ -10,7 +10,7 @@ import org.dokiteam.doki.core.util.ext.getThemeColor
 import org.dokiteam.doki.parsers.model.Manga
 import kotlin.math.absoluteValue
 
-object KotatsuColors {
+object DokiColors {
 
 	@ColorInt
 	@Deprecated("")

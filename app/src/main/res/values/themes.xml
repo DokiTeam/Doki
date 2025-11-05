@@ -2,42 +2,42 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
 	<!-- Base application theme. -->
-	<style name="Base.Theme.Kotatsu" parent="Theme.Material3.DayNight.NoActionBar">
+	<style name="Base.Theme.Doki" parent="Theme.Material3.DayNight.NoActionBar">
 
 		<!-- Theme Colors -->
-		<item name="colorPrimary">@color/kotatsu_primary</item>
-		<item name="colorPrimaryContainer">@color/kotatsu_primaryContainer</item>
-		<item name="colorOnPrimary">@color/kotatsu_onPrimary</item>
-		<item name="colorOnPrimaryContainer">@color/kotatsu_onPrimaryContainer</item>
-		<item name="colorPrimaryInverse">@color/kotatsu_inversePrimary</item>
-		<item name="colorSecondary">@color/kotatsu_secondary</item>
-		<item name="colorSecondaryContainer">@color/kotatsu_secondaryContainer</item>
-		<item name="colorOnSecondary">@color/kotatsu_onSecondary</item>
-		<item name="colorOnSecondaryContainer">@color/kotatsu_onSecondaryContainer</item>
-		<item name="colorTertiary">@color/kotatsu_tertiary</item>
-		<item name="colorTertiaryContainer">@color/kotatsu_tertiaryContainer</item>
-		<item name="colorOnTertiary">@color/kotatsu_onTertiary</item>
-		<item name="colorOnTertiaryContainer">@color/kotatsu_onTertiaryContainer</item>
-		<item name="colorSurface">@color/kotatsu_surface</item>
-		<item name="colorSurfaceDim">@color/kotatsu_surfaceDim</item>
-		<item name="colorSurfaceBright">@color/kotatsu_surfaceBright</item>
-		<item name="colorSurfaceContainerLowest">@color/kotatsu_surfaceContainerLowest</item>
-		<item name="colorSurfaceContainerLow">@color/kotatsu_surfaceContainerLow</item>
-		<item name="colorSurfaceContainer">@color/kotatsu_surfaceContainer</item>
-		<item name="colorSurfaceContainerHigh">@color/kotatsu_surfaceContainerHigh</item>
-		<item name="colorSurfaceContainerHighest">@color/kotatsu_surfaceContainerHighest</item>
-		<item name="colorSurfaceVariant">@color/kotatsu_surfaceVariant</item>
-		<item name="colorOnSurface">@color/kotatsu_onSurface</item>
-		<item name="colorOnSurfaceVariant">@color/kotatsu_onSurfaceVariant</item>
-		<item name="colorSurfaceInverse">@color/kotatsu_inverseSurface</item>
-		<item name="colorOnSurfaceInverse">@color/kotatsu_inverseOnSurface</item>
-		<item name="colorOnBackground">@color/kotatsu_onSurface</item>
+		<item name="colorPrimary">@color/doki_primary</item>
+		<item name="colorPrimaryContainer">@color/doki_primaryContainer</item>
+		<item name="colorOnPrimary">@color/doki_onPrimary</item>
+		<item name="colorOnPrimaryContainer">@color/doki_onPrimaryContainer</item>
+		<item name="colorPrimaryInverse">@color/doki_inversePrimary</item>
+		<item name="colorSecondary">@color/doki_secondary</item>
+		<item name="colorSecondaryContainer">@color/doki_secondaryContainer</item>
+		<item name="colorOnSecondary">@color/doki_onSecondary</item>
+		<item name="colorOnSecondaryContainer">@color/doki_onSecondaryContainer</item>
+		<item name="colorTertiary">@color/doki_tertiary</item>
+		<item name="colorTertiaryContainer">@color/doki_tertiaryContainer</item>
+		<item name="colorOnTertiary">@color/doki_onTertiary</item>
+		<item name="colorOnTertiaryContainer">@color/doki_onTertiaryContainer</item>
+		<item name="colorSurface">@color/doki_surface</item>
+		<item name="colorSurfaceDim">@color/doki_surfaceDim</item>
+		<item name="colorSurfaceBright">@color/doki_surfaceBright</item>
+		<item name="colorSurfaceContainerLowest">@color/doki_surfaceContainerLowest</item>
+		<item name="colorSurfaceContainerLow">@color/doki_surfaceContainerLow</item>
+		<item name="colorSurfaceContainer">@color/doki_surfaceContainer</item>
+		<item name="colorSurfaceContainerHigh">@color/doki_surfaceContainerHigh</item>
+		<item name="colorSurfaceContainerHighest">@color/doki_surfaceContainerHighest</item>
+		<item name="colorSurfaceVariant">@color/doki_surfaceVariant</item>
+		<item name="colorOnSurface">@color/doki_onSurface</item>
+		<item name="colorOnSurfaceVariant">@color/doki_onSurfaceVariant</item>
+		<item name="colorSurfaceInverse">@color/doki_inverseSurface</item>
+		<item name="colorOnSurfaceInverse">@color/doki_inverseOnSurface</item>
+		<item name="colorOnBackground">@color/doki_onSurface</item>
 		<item name="colorError">@color/error</item>
 		<item name="colorErrorContainer">@color/errorContainer</item>
 		<item name="colorOnError">@color/onError</item>
 		<item name="colorOnErrorContainer">@color/onErrorContainer</item>
-		<item name="colorOutline">@color/kotatsu_outline</item>
-		<item name="colorOutlineVariant">@color/kotatsu_outline</item>
+		<item name="colorOutline">@color/doki_outline</item>
+		<item name="colorOutlineVariant">@color/doki_outline</item>
 
 		<!-- Drawables (icons) -->
 		<item name="actionModeCloseDrawable">@drawable/abc_ic_clear_material</item>
@@ -54,39 +54,39 @@
 		<item name="windowActionModeOverlay">true</item>
 
 		<!-- System components styles -->
-		<item name="android:alertDialogTheme">@style/ThemeOverlay.Kotatsu.AlertDialog</item>
-		<item name="alertDialogTheme">@style/ThemeOverlay.Kotatsu.AlertDialog</item>
-		<item name="bottomSheetDialogTheme">@style/ThemeOverlay.Kotatsu.BottomSheetDialog</item>
-		<item name="sideSheetDialogTheme">@style/ThemeOverlay.Kotatsu.SideSheetDialog</item>
-		<item name="recyclerViewStyle">@style/Widget.Kotatsu.RecyclerView</item>
-		<item name="android:dropDownSpinnerStyle">@style/Widget.Kotatsu.Spinner.DropDown</item>
+		<item name="android:alertDialogTheme">@style/ThemeOverlay.Doki.AlertDialog</item>
+		<item name="alertDialogTheme">@style/ThemeOverlay.Doki.AlertDialog</item>
+		<item name="bottomSheetDialogTheme">@style/ThemeOverlay.Doki.BottomSheetDialog</item>
+		<item name="sideSheetDialogTheme">@style/ThemeOverlay.Doki.SideSheetDialog</item>
+		<item name="recyclerViewStyle">@style/Widget.Doki.RecyclerView</item>
+		<item name="android:dropDownSpinnerStyle">@style/Widget.Doki.Spinner.DropDown</item>
 		<item name="switchPreferenceCompatStyle">@style/Preference.SwitchPreferenceCompat.M3</item>
-		<item name="circularProgressIndicatorStyle">@style/Widget.Kotatsu.CircularProgressIndicator</item>
-		<item name="linearProgressIndicatorStyle">@style/Widget.Kotatsu.LinearProgressIndicator</item>
-		<item name="bottomSheetDragHandleStyle">@style/Widget.Kotatsu.BottomSheet.DragHandle</item>
-		<item name="preferenceTheme">@style/PreferenceThemeOverlay.Kotatsu</item>
+		<item name="circularProgressIndicatorStyle">@style/Widget.Doki.CircularProgressIndicator</item>
+		<item name="linearProgressIndicatorStyle">@style/Widget.Doki.LinearProgressIndicator</item>
+		<item name="bottomSheetDragHandleStyle">@style/Widget.Doki.BottomSheet.DragHandle</item>
+		<item name="preferenceTheme">@style/PreferenceThemeOverlay.Doki</item>
 		<!-- Fix crash in A15 -->
 		<item name="actionButtonStyle">@style/Widget.AppCompat.ActionButton</item>
 
 		<!-- Custom views -->
-		<item name="fastScrollerStyle">@style/Widget.Kotatsu.FastScroller</item>
-		<item name="listItemTextViewStyle">@style/Widget.Kotatsu.ListItemTextView</item>
-		<item name="dotIndicatorStyle">@style/Widget.Kotatsu.DotIndicator</item>
-		<item name="badgeViewStyle">@style/Widget.Kotatsu.BadgeView</item>
-		<item name="coverImageViewStyle">@style/Widget.Kotatsu.ImageView.Cover</item>
+		<item name="fastScrollerStyle">@style/Widget.Doki.FastScroller</item>
+		<item name="listItemTextViewStyle">@style/Widget.Doki.ListItemTextView</item>
+		<item name="dotIndicatorStyle">@style/Widget.Doki.DotIndicator</item>
+		<item name="badgeViewStyle">@style/Widget.Doki.BadgeView</item>
+		<item name="coverImageViewStyle">@style/Widget.Doki.ImageView.Cover</item>
 	</style>
 
 	<!--== Default Theme ==-->
-	<style name="Theme.Kotatsu" parent="Base.Theme.Kotatsu" />
+	<style name="Theme.Doki" parent="Base.Theme.Doki" />
 
 	<!-- Base ThemeOverlay -->
-	<style name="ThemeOverlay.Kotatsu" parent="ThemeOverlay.Material3.Light" />
+	<style name="ThemeOverlay.Doki" parent="ThemeOverlay.Material3.Light" />
 
 	<!-- Monet theme only support S+ -->
-	<style name="ThemeOverlay.Kotatsu.Monet" parent="ThemeOverlay.Material3.DynamicColors.Light" />
+	<style name="ThemeOverlay.Doki.Monet" parent="ThemeOverlay.Material3.DynamicColors.Light" />
 
 	<!-- Expressive Monet theme -->
-	<style name="ThemeOverlay.Kotatsu.Expressive" parent="ThemeOverlay.Material3Expressive.DynamicColors.DayNight">
+	<style name="ThemeOverlay.Doki.Expressive" parent="ThemeOverlay.Material3Expressive.DynamicColors.DayNight">
 		<item name="alertDialogTheme">@style/ThemeOverlay.Material3Expressive.Dialog.Alert</item>
 		<item name="materialAlertDialogTheme">@style/ThemeOverlay.Material3Expressive.MaterialAlertDialog</item>
 
@@ -148,12 +148,12 @@
 	</style>
 
 	<!-- Changes only for night -->
-	<style name="ThemeOverlay.Kotatsu.Amoled" parent="" />
+	<style name="ThemeOverlay.Doki.Amoled" parent="" />
 
 	<!-- App Widgets -->
 
-	<style name="Theme.Kotatsu.AppWidgetContainer" parent="@style/Theme.MaterialComponents.Light">
-		<item name="android:colorBackground">@color/kotatsu_background</item>
-		<item name="android:panelColorBackground">@color/kotatsu_primaryContainer</item>
+	<style name="Theme.Doki.AppWidgetContainer" parent="@style/Theme.MaterialComponents.Light">
+		<item name="android:colorBackground">@color/doki_background</item>
+		<item name="android:panelColorBackground">@color/doki_primaryContainer</item>
 	</style>
 </resources>

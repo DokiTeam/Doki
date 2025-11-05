@@ -23,7 +23,7 @@
 			android:background="?colorSurfaceContainer"
 			android:orientation="horizontal"
 			app:allowRgb565="true"
-			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
+			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Doki.Cover"
 			tools:ignore="ContentDescription"
 			tools:src="@tools:sample/backgrounds/scenic[5]" />
 

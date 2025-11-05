@@ -20,7 +20,7 @@
 			android:layout_height="0dp"
 			android:layout_weight="1"
 			android:scaleType="centerCrop"
-			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
+			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Doki.Cover.Small"
 			tools:src="@tools:sample/backgrounds/scenic" />
 
 		<TextView

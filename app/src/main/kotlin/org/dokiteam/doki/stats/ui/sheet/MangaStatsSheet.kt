@@ -12,7 +12,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.dokiteam.doki.R
 import org.dokiteam.doki.core.nav.router
 import org.dokiteam.doki.core.ui.sheet.BaseAdaptiveSheet
-import org.dokiteam.doki.core.util.KotatsuColors
+import org.dokiteam.doki.core.util.DokiColors
 import org.dokiteam.doki.core.util.ext.consume
 import org.dokiteam.doki.core.util.ext.observe
 import org.dokiteam.doki.core.util.ext.textAndVisible
@@ -32,7 +32,7 @@ class MangaStatsSheet : BaseAdaptiveSheet<SheetStatsMangaBinding>(), View.OnClic
 	override fun onViewBindingCreated(binding: SheetStatsMangaBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		binding.textViewTitle.text = viewModel.manga.title
-		binding.chartView.barColor = KotatsuColors.ofManga(binding.root.context, viewModel.manga)
+		binding.chartView.barColor = DokiColors.ofManga(binding.root.context, viewModel.manga)
 		viewModel.stats.observe(viewLifecycleOwner, ::onStatsChanged)
 		viewModel.startDate.observe(viewLifecycleOwner) {
 			binding.textViewStart.textAndVisible = it?.format(binding.root.context)
