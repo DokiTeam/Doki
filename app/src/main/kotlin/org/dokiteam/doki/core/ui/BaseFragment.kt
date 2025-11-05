@@ -15,8 +15,7 @@ import org.dokiteam.doki.core.ui.util.ActionModeDelegate
 
 abstract class BaseFragment<B : ViewBinding> :
 	OnApplyWindowInsetsListener,
-	Fragment(),
-	ExceptionResolver.Host {
+	Fragment() {
 
 	var viewBinding: B? = null
 		private set
