@@ -27,7 +27,6 @@ import org.dokiteam.doki.parsers.util.json.getLongOrDefault
 import org.dokiteam.doki.parsers.util.json.getStringOrNull
 import org.dokiteam.doki.parsers.util.json.mapJSONToSet
 import org.dokiteam.doki.parsers.util.json.toStringSet
-import org.dokiteam.doki.parsers.util.nullIfEmpty
 import org.dokiteam.doki.parsers.util.runCatchingCancellable
 import org.dokiteam.doki.parsers.util.toTitleCase
 import java.io.File

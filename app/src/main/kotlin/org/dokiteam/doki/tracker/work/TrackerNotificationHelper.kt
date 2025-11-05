@@ -24,7 +24,6 @@ import org.dokiteam.doki.core.util.ext.checkNotificationPermission
 import org.dokiteam.doki.core.util.ext.getQuantityStringSafe
 import org.dokiteam.doki.core.util.ext.mangaSourceExtra
 import org.dokiteam.doki.core.util.ext.toBitmapOrNull
-import org.dokiteam.doki.parsers.model.ContentRating
 import org.dokiteam.doki.parsers.model.Manga
 import org.dokiteam.doki.parsers.model.MangaChapter
 import javax.inject.Inject

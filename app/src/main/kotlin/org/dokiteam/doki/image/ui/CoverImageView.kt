@@ -203,6 +203,7 @@ class CoverImageView @JvmOverloads constructor(
 			is HttpStatusException -> statusCode.toString()
 			is ContentUnavailableException,
 			is FileNotFoundException -> "404"
+
 			is TooManyRequestExceptions -> "429"
 			is ParseException -> "</>"
 			is UnsupportedSourceException -> "X"
@@ -264,7 +265,7 @@ class CoverImageView @JvmOverloads constructor(
 					width = Dimension(height.px * view.aspectRationWidth / view.aspectRationHeight)
 				}
 			}
-			return Size(checkNotNull(width), checkNotNull(height))
+			return Size(width, height)
 		}
 
 		private fun getWidth() = getDimension(

@@ -1,13 +1,11 @@
 package org.dokiteam.doki.details.domain
 
-import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.onEach
 import org.dokiteam.doki.core.model.FavouriteCategory
 import org.dokiteam.doki.core.model.isNsfw
 import org.dokiteam.doki.core.prefs.AppSettings
