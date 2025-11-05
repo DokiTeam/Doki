@@ -109,6 +109,12 @@ class BackupRepository @Inject constructor(
 					data = database.getSourcesDao().dumpEnabled().map { SourceBackup(it) },
 					serializer = serializer(),
 				)
+
+				BackupSection.SCROBBLING -> output.writeJsonArray(
+					section = BackupSection.SCROBBLING,
+					data = database.getScrobblingDao().dumpEnabled().map { ScrobblingBackup(it) },
+					serializer = serializer(),
+				)
 			}
 			progress?.emit(commonProgress)
 			commonProgress++
@@ -161,6 +167,10 @@ class BackupRepository @Inject constructor(
 
 					BackupSection.SOURCES -> input.readJsonArray<SourceBackup>(serializer()).restoreToDb {
 						getSourcesDao().upsert(it.toEntity())
+					}
+
+					BackupSection.SCROBBLING -> input.readJsonArray<ScrobblingBackup>(serializer()).restoreToDb {
+						getScrobblingDao().upsert(it.toEntity())
 					}
 
 					null -> CompositeResult.EMPTY // skip unknown entries
