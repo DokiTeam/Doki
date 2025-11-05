@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.room.InvalidationTracker
 import androidx.work.Configuration
-import androidx.work.WorkManager
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -28,7 +27,6 @@ import org.dokiteam.doki.core.db.MangaDatabase
 import org.dokiteam.doki.core.os.AppValidator
 import org.dokiteam.doki.core.os.RomCompat
 import org.dokiteam.doki.core.prefs.AppSettings
-import org.dokiteam.doki.core.util.WorkServiceStopHelper
 import org.dokiteam.doki.core.util.ext.processLifecycleScope
 import org.dokiteam.doki.local.data.LocalStorageChanges
 import org.dokiteam.doki.local.data.index.LocalMangaIndex
@@ -64,9 +62,6 @@ open class BaseApp : Application(), Configuration.Provider {
 	lateinit var workScheduleManager: WorkScheduleManager
 
 	@Inject
-	lateinit var workManagerProvider: Provider<WorkManager>
-
-	@Inject
 	lateinit var localMangaIndexProvider: Provider<LocalMangaIndex>
 
 	@Inject
@@ -99,7 +94,6 @@ open class BaseApp : Application(), Configuration.Provider {
 			localStorageChanges.collect(localMangaIndexProvider.get())
 		}
 		workScheduleManager.init()
-		WorkServiceStopHelper(workManagerProvider).setup()
 	}
 
 	override fun attachBaseContext(base: Context) {
