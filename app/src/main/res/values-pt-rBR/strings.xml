@@ -881,4 +881,7 @@
     <string name="download_default_directory">Diretório padrão onde baixar os mangás</string>
     <string name="private_app_directory_warning">Esse diretório e todo seu conteúdo será deletado se desinstalar a aplicação</string>
     <string name="available_pattern">%1$s disponível</string>
+    <string name="pinned_sources_only">Yalnızca sabitlenen kaynaklar</string>
+    <string name="hide_empty_sources">Boş kaynakları gizle</string>
+    <string name="auto_double_foldable">Otomatik İki Sayfa Katlanabilir</string>
 </resources>
