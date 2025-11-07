@@ -1,6 +1,8 @@
 package org.dokiteam.doki.main.ui
 
 import android.Manifest
+import android.app.BackgroundServiceStartNotAllowedException
+import android.app.ServiceStartNotAllowedException
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
@@ -58,6 +60,7 @@ import org.dokiteam.doki.core.util.ext.consume
 import org.dokiteam.doki.core.util.ext.end
 import org.dokiteam.doki.core.util.ext.observe
 import org.dokiteam.doki.core.util.ext.observeEvent
+import org.dokiteam.doki.core.util.ext.printStackTraceDebug
 import org.dokiteam.doki.core.util.ext.start
 import org.dokiteam.doki.databinding.ActivityMainBinding
 import org.dokiteam.doki.details.service.MangaPrefetchService
@@ -288,7 +291,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		adjustFabVisibility(isResumeEnabled = isEnabled)
 	}
 
-	private fun onFirstStart() {
+	private fun onFirstStart() = try {
 		lifecycleScope.launch(Dispatchers.Main) { // not a default `Main.immediate` dispatcher
 			withContext(Dispatchers.Default) {
 				LocalStorageCleanupWorker.enqueue(applicationContext)
@@ -303,6 +306,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 				}
 			}
 		}
+	} catch (e: IllegalStateException) {
+		e.printStackTraceDebug()
 	}
 
 	private fun adjustAppbar(topFragment: Fragment) {
