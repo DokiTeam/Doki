@@ -30,7 +30,6 @@ abstract class BaseReaderFragment<B : ViewBinding> : BaseFragment<B>(), ZoomCont
 			// may contain the initial state from when content was first loaded.
 			val currentState = viewModel.getCurrentState()
 			if (it.state == null && it.pages.isNotEmpty() && readerAdapter?.hasItems != true) {
-				onPagesChanged(it.pages, viewModel.getCurrentState())
 				onPagesChanged(it.pages, currentState)
 			} else if (currentState != null) {
 				// If we have a current state, use it instead of content.state
