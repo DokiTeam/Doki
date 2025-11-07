@@ -108,7 +108,6 @@ class ReaderConfigSheet :
 		binding.buttonBookmark.setOnClickListener(this)
 		binding.switchDoubleReader.setOnCheckedChangeListener(this)
 		binding.switchPullGesture.setOnCheckedChangeListener(this)
-
 		binding.seekbarSensitivity.addOnChangeListener(this)
 
 		viewModel.isBookmarkAdded.observe(viewLifecycleOwner) {
