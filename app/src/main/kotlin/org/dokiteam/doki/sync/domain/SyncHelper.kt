@@ -22,7 +22,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
-import okhttp3.internal.closeQuietly
 import okio.IOException
 import org.jetbrains.annotations.Blocking
 import org.dokiteam.doki.BuildConfig
