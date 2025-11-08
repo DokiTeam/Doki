@@ -26,6 +26,7 @@ import org.dokiteam.doki.backups.data.model.CategoryBackup
 import org.dokiteam.doki.backups.data.model.FavouriteBackup
 import org.dokiteam.doki.backups.data.model.HistoryBackup
 import org.dokiteam.doki.backups.data.model.MangaBackup
+import org.dokiteam.doki.backups.data.model.ScrobblingBackup
 import org.dokiteam.doki.backups.data.model.SourceBackup
 import org.dokiteam.doki.backups.domain.BackupSection
 import org.dokiteam.doki.core.db.MangaDatabase
