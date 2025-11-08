@@ -16,7 +16,6 @@ import org.dokiteam.doki.core.ui.widgets.ChipsView
 import org.dokiteam.doki.core.util.ext.isAnimationsEnabled
 import org.dokiteam.doki.core.util.ext.observe
 import org.dokiteam.doki.databinding.FragmentFilterHeaderBinding
-import org.dokiteam.doki.filter.data.PersistableFilter
 import org.dokiteam.doki.filter.ui.model.FilterHeaderModel
 import org.dokiteam.doki.parsers.model.ContentRating
 import org.dokiteam.doki.parsers.model.ContentType
@@ -55,12 +54,6 @@ class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsV
 	override fun onChipClick(chip: Chip, data: Any?) {
 		when (data) {
 			is MangaTag -> filter.toggleTag(data, !chip.isChecked)
-			is PersistableFilter -> if (chip.isChecked) {
-				filter.reset()
-			} else {
-				filter.setAdjusted(data.filter)
-			}
-
 			is String -> Unit
 			null -> router.showTagsCatalogSheet(excludeMode = false)
 		}

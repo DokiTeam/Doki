@@ -15,18 +15,19 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.dokiteam.doki.core.model.MangaSource
 import org.dokiteam.doki.core.parser.MangaRepository
+import org.dokiteam.doki.core.model.unwrap
 import org.dokiteam.doki.core.util.LocaleComparator
 import org.dokiteam.doki.core.util.ext.asFlow
 import org.dokiteam.doki.core.util.ext.lifecycleScope
 import org.dokiteam.doki.core.util.ext.sortedByOrdinal
 import org.dokiteam.doki.core.util.ext.sortedWithSafe
-import org.dokiteam.doki.filter.data.PersistableFilter
 import org.dokiteam.doki.filter.data.SavedFiltersRepository
 import org.dokiteam.doki.filter.ui.model.FilterProperty
 import org.dokiteam.doki.filter.ui.tags.TagTitleComparator
@@ -45,6 +46,7 @@ import org.dokiteam.doki.parsers.util.nullIfEmpty
 import org.dokiteam.doki.parsers.util.suspendlazy.suspendLazy
 import org.dokiteam.doki.remotelist.ui.RemoteListFragment
 import org.dokiteam.doki.search.domain.MangaSearchRepository
+import org.json.JSONObject
 import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
@@ -64,9 +66,26 @@ class FilterCoordinator @Inject constructor(
 
 	private val currentListFilter = MutableStateFlow(MangaListFilter.EMPTY)
 	private val currentSortOrder = MutableStateFlow(repository.defaultSortOrder)
+	private val currentPresetId = MutableStateFlow<Long?>(null)
+	private var lastAppliedPayload: JSONObject? = null
 
 	private val availableSortOrders = repository.sortOrders
 	private val filterOptions = suspendLazy { repository.getFilterOptions() }
+
+	init {
+		coroutineScope.launch {
+			currentListFilter.collect { lf ->
+				val applied = lastAppliedPayload
+				if (applied != null) {
+					val cur = savedFiltersRepository.serializeFilter(lf)
+					if (cur.toString() != applied.toString()) {
+						currentPresetId.value = null
+						lastAppliedPayload = null
+					}
+				}
+			}
+		}
+	}
 
 	val capabilities = repository.filterCapabilities
 
@@ -254,15 +273,11 @@ class FilterCoordinator @Inject constructor(
 		MutableStateFlow(FilterProperty.EMPTY)
 	}
 
-	val savedFilters: StateFlow<FilterProperty<PersistableFilter>> = combine(
-		savedFiltersRepository.observeAll(repository.source),
-		currentListFilter,
-	) { available, applied ->
-		FilterProperty(
-			availableItems = available,
-			selectedItems = setOfNotNull(available.find { it.filter == applied }),
-		)
-	}.stateIn(coroutineScope, SharingStarted.Lazily, FilterProperty.EMPTY)
+	val savedPresets: StateFlow<List<SavedFiltersRepository.Preset>> =
+		savedFiltersRepository.observe(repository.source.unwrap().name)
+			.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
+
+	val selectedPresetId: StateFlow<Long?> = currentPresetId
 
 	fun reset() {
 		currentListFilter.value = MangaListFilter.EMPTY
@@ -298,16 +313,36 @@ class FilterCoordinator @Inject constructor(
 		set(newFilter)
 	}
 
-	fun saveCurrentFilter(name: String) = coroutineScope.launch {
-		savedFiltersRepository.save(repository.source, name, currentListFilter.value)
+	fun saveCurrentPreset(name: String) {
+		val preset = savedFiltersRepository.save(repository.source.unwrap().name, name, currentListFilter.value)
+		currentPresetId.value = preset.id
+		lastAppliedPayload = preset.payload
 	}
 
-	fun renameSavedFilter(id: Int, newName: String) = coroutineScope.launch {
-		savedFiltersRepository.rename(repository.source, id, newName)
+	fun applyPreset(preset: SavedFiltersRepository.Preset) {
+		coroutineScope.launch {
+			val available = filterOptions.asFlow().map { it.getOrNull()?.availableTags.orEmpty() }.first()
+			val byKey: (Set<String>) -> Set<MangaTag> = { keys ->
+				val all = available.associateBy { it.key }
+				keys.mapNotNull { all[it] }.toSet()
+			}
+			val filter = savedFiltersRepository.deserializeFilter(preset.payload, byKey)
+			setAdjusted(filter)
+			currentPresetId.value = preset.id
+			lastAppliedPayload = preset.payload
+		}
 	}
 
-	fun deleteSavedFilter(id: Int) = coroutineScope.launch {
-		savedFiltersRepository.delete(repository.source, id)
+	fun renamePreset(id: Long, newName: String) {
+		savedFiltersRepository.rename(repository.source.unwrap().name, id, newName)
+	}
+
+	fun deletePreset(id: Long) {
+		savedFiltersRepository.delete(repository.source.unwrap().name, id)
+		if (currentPresetId.value == id) {
+			currentPresetId.value = null
+			lastAppliedPayload = null
+		}
 	}
 
 	fun setQuery(value: String?) {

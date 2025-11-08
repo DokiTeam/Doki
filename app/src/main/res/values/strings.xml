@@ -47,6 +47,7 @@
 	<string name="sort_order">Sorting order</string>
 	<string name="filter">Filter</string>
 	<string name="saved_filters">Saved filters</string>
+	<string name="saved_filters">Saved filters</string>
 	<string name="theme">Theme</string>
 	<string name="light">Light</string>
 	<string name="dark">Dark</string>
@@ -633,7 +634,7 @@
 	<string name="show_pages_thumbs">Show pages thumbnails</string>
 	<string name="show_pages_thumbs_summary">Enable the \"Pages\" tab on the details screen</string>
 	<string name="error_no_data_received">No data was received from server</string>
-	<string name="unsupported_backup_message">Please select a proper Doki backup file</string>
+	<string name="unsupported_backup_message">Please select a proper Kotatsu / Doki backup file</string>
 	<string name="list_ellipsize_pattern" translatable="false">(+%d)</string>
 	<!-- Short hours format pattern -->
 	<string name="hours_short">%d h</string>
@@ -880,7 +881,7 @@
 	<string name="discord_rpc_summary">Show your reading status on Discord</string>
 	<string name="obtain">Obtain</string>
 	<string name="discord_rpc_description">Reading manga on Doki - a manga reader app</string>
-	<string name="reading_s">Reading %s</string>
+	<string name="reading_s">Reading: %s</string>
 	<string name="read_on_s">Read on %s</string>
 	<string name="rpc_skip_nsfw_summary">Do not use RPC for adult content</string>
 	<string name="invalid_token">Invalid token: %s</string>
@@ -891,6 +892,4 @@
 	<string name="chapters_load_failed">Failed to load chapter list</string>
 	<string name="telegram_integration">Telegram integration</string>
 	<string name="test_parser">Test manga source</string>
-	<string name="rename">Rename</string>
-	<string name="save_filter">Save filter</string>
 </resources>
