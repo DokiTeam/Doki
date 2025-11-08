@@ -1,6 +1,5 @@
 package org.dokiteam.doki.settings.userdata
 
-
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
