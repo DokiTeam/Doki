@@ -13,11 +13,11 @@ import androidx.annotation.WorkerThread
 import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
 import dagger.Reusable
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import okhttp3.Cache
+import org.dokiteam.doki.core.LocalizedAppContext
 import org.dokiteam.doki.core.exceptions.NonFileUriException
 import org.dokiteam.doki.core.prefs.AppSettings
 import org.dokiteam.doki.core.util.ext.computeSize
@@ -39,8 +39,8 @@ private const val CACHE_SIZE_MAX: Long = 250 * 1024 * 1024 // 250MB
 
 @Reusable
 class LocalStorageManager @Inject constructor(
-	@ApplicationContext private val context: Context,
-	private val settings: AppSettings,
+    @LocalizedAppContext private val context: Context,
+    private val settings: AppSettings,
 ) {
 
 	val contentResolver: ContentResolver
