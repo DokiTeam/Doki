@@ -1,6 +1,5 @@
 package org.dokiteam.doki.filter.ui.sheet
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +27,7 @@ import org.dokiteam.doki.core.util.ext.setValueRounded
 import org.dokiteam.doki.core.util.ext.setValuesRounded
 import org.dokiteam.doki.databinding.SheetFilterBinding
 import org.dokiteam.doki.filter.ui.FilterCoordinator
+import org.dokiteam.doki.filter.data.SavedFiltersRepository
 import org.dokiteam.doki.filter.ui.model.FilterProperty
 import org.dokiteam.doki.parsers.model.ContentRating
 import org.dokiteam.doki.parsers.model.ContentType
@@ -38,6 +38,8 @@ import org.dokiteam.doki.parsers.model.SortOrder
 import org.dokiteam.doki.parsers.model.YEAR_UNKNOWN
 import org.dokiteam.doki.parsers.util.toIntUp
 import java.util.Locale
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import android.widget.EditText
 
 class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 	AdapterView.OnItemSelectedListener,
@@ -47,13 +49,74 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		return SheetFilterBinding.inflate(inflater, container, false)
 	}
 
+	private fun onSavedPresetsChanged(list: List<SavedFiltersRepository.Preset>, selectedId: Long?) {
+		val b = viewBinding ?: return
+		if (list.isEmpty()) {
+			b.layoutSavedFilters.isGone = true
+			b.chipsSavedFilters.setChips(emptyList())
+			return
+		}
+		b.layoutSavedFilters.isGone = false
+		val chips = list.map { p ->
+			ChipsView.ChipModel(
+				title = p.name,
+				isChecked = p.id == selectedId,
+				data = p,
+			)
+		}
+		b.chipsSavedFilters.setChips(chips)
+	}
+
+	private fun promptPresetName(onSubmit: (String) -> Unit) {
+		val ctx = requireContext()
+		val input = EditText(ctx)
+		MaterialAlertDialogBuilder(ctx)
+			.setTitle(R.string.enter_name)
+			.setView(input)
+			.setPositiveButton(R.string.save) { d, _ ->
+				val text = input.text?.toString()?.trim()
+				if (!text.isNullOrEmpty()) onSubmit(text)
+				d.dismiss()
+			}
+			.setNegativeButton(android.R.string.cancel) { d, _ -> d.dismiss() }
+			.show()
+	}
+
+	private fun showPresetOptions(filter: FilterCoordinator, preset: SavedFiltersRepository.Preset) {
+		val ctx = requireContext()
+		val items = arrayOf(getString(R.string.edit), getString(R.string.delete))
+		MaterialAlertDialogBuilder(ctx)
+			.setItems(items) { d, which ->
+				when (which) {
+					0 -> promptRename(filter, preset)
+					1 -> filter.deletePreset(preset.id)
+				}
+				d.dismiss()
+			}
+			.show()
+	}
+
+	private fun promptRename(filter: FilterCoordinator, preset: SavedFiltersRepository.Preset) {
+		val ctx = requireContext()
+		val input = EditText(ctx)
+		input.setText(preset.name)
+		MaterialAlertDialogBuilder(ctx)
+			.setTitle(R.string.edit)
+			.setView(input)
+			.setPositiveButton(R.string.save) { d, _ ->
+				val text = input.text?.toString()?.trim()
+				if (!text.isNullOrEmpty()) filter.renamePreset(preset.id, text)
+				d.dismiss()
+			}
+			.setNegativeButton(android.R.string.cancel) { d, _ -> d.dismiss() }
+			.show()
+	}
+
 	override fun onViewBindingCreated(binding: SheetFilterBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		if (dialog == null) {
 			binding.layoutBody.updatePadding(top = binding.layoutBody.paddingBottom)
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-				binding.scrollView.scrollIndicators = 0
-			}
+			binding.scrollView.scrollIndicators = 0
 		}
 		val filter = FilterCoordinator.require(this)
 		filter.sortOrder.observe(viewLifecycleOwner, this::onSortOrderChanged)
@@ -91,6 +154,38 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		}
 		binding.layoutGenresExclude.setOnMoreButtonClickListener {
 			router.showTagsCatalogSheet(excludeMode = true)
+		}
+
+		binding.chipsSavedFilters.onChipClickListener = ChipsView.OnChipClickListener { chip, data ->
+			when (data) {
+				is SavedFiltersRepository.Preset -> filter.applyPreset(data)
+			}
+		}
+		binding.chipsSavedFilters.onChipLongClickListener = ChipsView.OnChipLongClickListener { chip, data ->
+			when (data) {
+				is SavedFiltersRepository.Preset -> {
+					showPresetOptions(filter, data)
+					true
+				}
+				else -> false
+			}
+		}
+
+		filter.savedPresets.observe(viewLifecycleOwner) { list ->
+			val selectedId = filter.selectedPresetId.value
+			onSavedPresetsChanged(list, selectedId)
+		}
+		filter.selectedPresetId.observe(viewLifecycleOwner) { selectedId ->
+			onSavedPresetsChanged(filter.savedPresets.value, selectedId)
+		}
+
+		filter.observe().observe(viewLifecycleOwner) {
+			binding.buttonSaveFilter.isEnabled = filter.isFilterApplied
+		}
+		binding.buttonSaveFilter.setOnClickListener {
+			promptPresetName { name ->
+				filter.saveCurrentPreset(name)
+			}
 		}
 	}
 
