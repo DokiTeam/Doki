@@ -10,6 +10,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
+import androidx.transition.TransitionManager
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
@@ -92,6 +93,10 @@ class ReaderConfigSheet :
 		binding.switchDoubleReader.isEnabled = mode == ReaderMode.STANDARD || mode == ReaderMode.REVERSED
 		binding.switchPullGesture.isChecked = settings.isWebtoonPullGestureEnabled
 		binding.switchPullGesture.isEnabled = mode == ReaderMode.WEBTOON
+        binding.switchDoubleFoldable.isChecked = settings.isReaderDoubleOnFoldable
+        binding.switchDoubleFoldable.isEnabled = binding.switchDoubleReader.isEnabled
+
+        binding.adjustSensitivitySlider(withAnimation = false)
 
 		binding.textSensitivity.isVisible = settings.isReaderDoubleOnLandscape
 		binding.seekbarSensitivity.isVisible = settings.isReaderDoubleOnLandscape
@@ -108,6 +113,7 @@ class ReaderConfigSheet :
 		binding.buttonBookmark.setOnClickListener(this)
 		binding.switchDoubleReader.setOnCheckedChangeListener(this)
 		binding.switchPullGesture.setOnCheckedChangeListener(this)
+        binding.switchDoubleFoldable.setOnCheckedChangeListener(this)
 		binding.seekbarSensitivity.addOnChangeListener(this)
 
 		viewModel.isBookmarkAdded.observe(viewLifecycleOwner) {
@@ -175,54 +181,61 @@ class ReaderConfigSheet :
 		}
 	}
 
-	override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
-		when (buttonView.id) {
-			R.id.switch_screen_lock_rotation -> {
-				orientationHelper.isLocked = isChecked
-			}
+    override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
+        when (buttonView.id) {
+            R.id.switch_screen_lock_rotation -> {
+                orientationHelper.isLocked = isChecked
+            }
 
-			R.id.switch_double_reader -> {
-				settings.isReaderDoubleOnLandscape = isChecked
+            R.id.switch_double_reader -> {
+                settings.isReaderDoubleOnLandscape = isChecked
+                viewBinding?.adjustSensitivitySlider(withAnimation = true)
+                findParentCallback(Callback::class.java)?.onDoubleModeChanged(isChecked)
+            }
 
-				viewBinding?.textSensitivity?.isVisible = isChecked
-				viewBinding?.seekbarSensitivity?.isVisible = isChecked
+            R.id.switch_double_foldable -> {
+                settings.isReaderDoubleOnFoldable = isChecked
+                // Re-evaluate double-page considering foldable state and current manual toggle
+                findParentCallback(Callback::class.java)
+                    ?.onDoubleModeChanged(settings.isReaderDoubleOnLandscape)
+            }
 
-				findParentCallback(Callback::class.java)?.onDoubleModeChanged(isChecked)
-			}
-
-			R.id.switch_pull_gesture -> {
-				settings.isWebtoonPullGestureEnabled = isChecked
-			}
-		}
-	}
+            R.id.switch_pull_gesture -> {
+                settings.isWebtoonPullGestureEnabled = isChecked
+            }
+        }
+    }
 
 	override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
 		settings.readerDoublePagesSensitivity = value / 100f
 	}
 
-	override fun onButtonChecked(
-		group: MaterialButtonToggleGroup?,
-		checkedId: Int,
-		isChecked: Boolean,
-	) {
-		if (!isChecked) {
-			return
-		}
-		val newMode = when (checkedId) {
-			R.id.button_standard -> ReaderMode.STANDARD
-			R.id.button_webtoon -> ReaderMode.WEBTOON
-			R.id.button_reversed -> ReaderMode.REVERSED
-			R.id.button_vertical -> ReaderMode.VERTICAL
-			else -> return
-		}
-		viewBinding?.switchDoubleReader?.isEnabled = newMode == ReaderMode.STANDARD || newMode == ReaderMode.REVERSED
-		viewBinding?.switchPullGesture?.isEnabled = newMode == ReaderMode.WEBTOON
-		if (newMode == mode) {
-			return
-		}
-		findParentCallback(Callback::class.java)?.onReaderModeChanged(newMode) ?: return
-		mode = newMode
-	}
+    override fun onButtonChecked(
+        group: MaterialButtonToggleGroup?,
+        checkedId: Int,
+        isChecked: Boolean,
+    ) {
+        if (!isChecked) return
+
+        val newMode = when (checkedId) {
+            R.id.button_standard -> ReaderMode.STANDARD
+            R.id.button_webtoon -> ReaderMode.WEBTOON
+            R.id.button_reversed -> ReaderMode.REVERSED
+            R.id.button_vertical -> ReaderMode.VERTICAL
+            else -> return
+        }
+
+        viewBinding?.run {
+            switchDoubleReader.isEnabled = newMode == ReaderMode.STANDARD || newMode == ReaderMode.REVERSED
+            switchPullGesture.isEnabled = newMode == ReaderMode.WEBTOON
+            switchDoubleFoldable.isEnabled = switchDoubleReader.isEnabled
+            adjustSensitivitySlider(withAnimation = true)
+        }
+
+        if (newMode == mode) return
+        findParentCallback(Callback::class.java)?.onReaderModeChanged(newMode)
+        mode = newMode
+    }
 
 	private fun observeScreenOrientation() {
 		orientationHelper.observeAutoOrientation()
@@ -250,7 +263,17 @@ class ReaderConfigSheet :
 		)
 	}
 
-	interface Callback {
+    private fun SheetReaderConfigBinding.adjustSensitivitySlider(withAnimation: Boolean) {
+        val isSubOptionsVisible = switchDoubleReader.isEnabled && switchDoubleReader.isChecked
+        if (withAnimation) {
+            TransitionManager.beginDelayedTransition(root)
+        }
+        textSensitivity.isVisible = isSubOptionsVisible
+        seekbarSensitivity.isVisible = isSubOptionsVisible
+        switchDoubleFoldable.isVisible = isSubOptionsVisible
+    }
+
+    interface Callback {
 
 		fun onReaderModeChanged(mode: ReaderMode)
 

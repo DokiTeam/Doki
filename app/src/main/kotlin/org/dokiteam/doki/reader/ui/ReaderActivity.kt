@@ -3,6 +3,8 @@ package org.dokiteam.doki.reader.ui
 import android.app.assist.AssistContent
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.KeyEvent
@@ -24,6 +26,8 @@ import androidx.transition.Fade
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
+import androidx.window.layout.FoldingFeature
+import androidx.window.layout.WindowInfoTracker
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +35,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.dokiteam.doki.R
@@ -107,8 +113,10 @@ class ReaderActivity :
 	private lateinit var touchHelper: TapGridDispatcher
 	private lateinit var controlDelegate: ReaderControlDelegate
 	private var gestureInsets: Insets = Insets.NONE
-	private lateinit var readerManager: ReaderManager
-	private val hideUiRunnable = Runnable { setUiIsVisible(false) }
+    private lateinit var readerManager: ReaderManager
+    private val hideUiRunnable = Runnable { setUiIsVisible(false) }
+    // Tracks whether the foldable device is in an unfolded state (half-opened or flat)
+    private var isFoldUnfolded: Boolean = false
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -187,6 +195,25 @@ class ReaderActivity :
 			viewBinding.zoomControl.isVisible = it
 		}
 		addMenuProvider(ReaderMenuProvider(viewModel) { openMenu() })
+
+        // Observe foldable window layout to auto-enable double-page if configured
+        WindowInfoTracker.getOrCreate(this)
+            .windowLayoutInfo(this)
+            .onEach { info ->
+                val fold = info.displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
+                val unfolded = when (fold?.state) {
+                    FoldingFeature.State.HALF_OPENED, FoldingFeature.State.FLAT -> true
+                    else -> false
+                }
+                if (unfolded != isFoldUnfolded) {
+                    isFoldUnfolded = unfolded
+                    applyDoubleModeAuto()
+                }
+            }
+            .launchIn(lifecycleScope)
+
+        // Apply initial double-mode considering foldable setting
+        applyDoubleModeAuto()
 	}
 
 	override fun getParentActivityIntent(): Intent? {
@@ -214,7 +241,9 @@ class ReaderActivity :
 
 	override fun onProvideAssistContent(outContent: AssistContent) {
 		super.onProvideAssistContent(outContent)
-		viewModel.getMangaOrNull()?.publicUrl?.toUriOrNull()?.let { outContent.webUri = it }
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			viewModel.getMangaOrNull()?.publicUrl?.toUriOrNull()?.let { outContent.webUri = it }
+		}
 	}
 
 	override fun isNsfwContent(): Flow<Boolean> = viewModel.isMangaNsfw
@@ -340,9 +369,19 @@ class ReaderActivity :
 		viewBinding.timerControl.onReaderModeChanged(mode)
 	}
 
-	override fun onDoubleModeChanged(isEnabled: Boolean) {
-		readerManager.setDoubleReaderMode(isEnabled)
-	}
+    override fun onDoubleModeChanged(isEnabled: Boolean) {
+        // Combine manual toggle with foldable auto setting
+        applyDoubleModeAuto(isEnabled)
+    }
+
+    private fun applyDoubleModeAuto(manualEnabled: Boolean? = null) {
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        // Auto double-page on foldable when device is unfolded (half-opened or flat)
+        val autoFoldable = settings.isReaderDoubleOnFoldable && isFoldUnfolded
+        val manualLandscape = (manualEnabled ?: settings.isReaderDoubleOnLandscape) && isLandscape
+        val autoEnabled = autoFoldable || manualLandscape
+        readerManager.setDoubleReaderMode(autoEnabled)
+    }
 
 	private fun setKeepScreenOn(isKeep: Boolean) {
 		if (isKeep) {
