@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.combine
 import org.dokiteam.doki.R
 import org.dokiteam.doki.core.model.titleResId
 import org.dokiteam.doki.core.ui.widgets.ChipsView
+import org.dokiteam.doki.filter.data.PersistableFilter
 import org.dokiteam.doki.filter.ui.model.FilterHeaderModel
 import org.dokiteam.doki.filter.ui.model.FilterProperty
 import org.dokiteam.doki.parsers.model.MangaListFilter
@@ -21,10 +22,15 @@ class FilterHeaderProducer @Inject constructor(
 ) {
 
 	fun observeHeader(filterCoordinator: FilterCoordinator): Flow<FilterHeaderModel> {
-		return combine(filterCoordinator.tags, filterCoordinator.observe()) { tags, snapshot ->
+		return combine(
+			filterCoordinator.savedFilters,
+			filterCoordinator.tags,
+			filterCoordinator.observe(),
+		) { saved, tags, snapshot ->
 			val chipList = createChipsList(
 				source = filterCoordinator.mangaSource,
 				capabilities = filterCoordinator.capabilities,
+				savedFilters = saved,
 				tagsProperty = tags,
 				snapshot = snapshot.listFilter,
 				limit = 12,
@@ -40,11 +46,12 @@ class FilterHeaderProducer @Inject constructor(
 	private suspend fun createChipsList(
 		source: MangaSource,
 		capabilities: MangaListFilterCapabilities,
+		savedFilters: FilterProperty<PersistableFilter>,
 		tagsProperty: FilterProperty<MangaTag>,
 		snapshot: MangaListFilter,
 		limit: Int,
 	): List<ChipsView.ChipModel> {
-		val result = ArrayDeque<ChipsView.ChipModel>(limit + 3)
+		val result = ArrayDeque<ChipsView.ChipModel>(savedFilters.availableItems.size + limit + 3)
 		if (snapshot.query.isNullOrEmpty() || capabilities.isSearchWithFiltersSupported) {
 			val selectedTags = tagsProperty.selectedItems.toMutableSet()
 			var tags = if (selectedTags.isEmpty()) {
@@ -57,6 +64,18 @@ class FilterHeaderProducer @Inject constructor(
 			}
 			if (tags.isEmpty() && selectedTags.isEmpty()) {
 				return emptyList()
+			}
+			for (saved in savedFilters.availableItems) {
+				val model = ChipsView.ChipModel(
+					title = saved.name,
+					isChecked = saved in savedFilters.selectedItems,
+					data = saved,
+				)
+				if (model.isChecked) {
+					result.addFirst(model)
+				} else {
+					result.addLast(model)
+				}
 			}
 			for (tag in tags) {
 				val model = ChipsView.ChipModel(

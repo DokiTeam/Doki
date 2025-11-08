@@ -13,14 +13,13 @@
 		android:layout_height="wrap_content"
 		app:title="@string/filter" />
 
-
-
 	<androidx.core.widget.NestedScrollView
 		android:id="@+id/scrollView"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1"
 		android:clipToPadding="false"
-		android:scrollIndicators="top"
+		android:scrollIndicators="top|bottom"
 		tools:ignore="UnusedAttribute">
 
 		<LinearLayout
@@ -30,23 +29,6 @@
 			android:orientation="vertical"
 			android:paddingHorizontal="@dimen/margin_small"
 			android:paddingBottom="@dimen/margin_normal">
-
-			<org.dokiteam.doki.filter.ui.FilterFieldLayout
-				android:id="@+id/layout_saved_filters"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/margin_small"
-				app:title="@string/saved_filters">
-
-				<org.dokiteam.doki.core.ui.widgets.ChipsView
-					android:id="@+id/chips_saved_filters"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_marginHorizontal="@dimen/margin_small"
-					android:layout_marginTop="@dimen/margin_small"
-					app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
-
-			</org.dokiteam.doki.filter.ui.FilterFieldLayout>
 
 			<org.dokiteam.doki.filter.ui.FilterFieldLayout
 				android:id="@+id/layout_order"
@@ -70,6 +52,23 @@
 						android:paddingHorizontal="8dp" />
 
 				</com.google.android.material.card.MaterialCardView>
+
+			</org.dokiteam.doki.filter.ui.FilterFieldLayout>
+
+			<org.dokiteam.doki.filter.ui.FilterFieldLayout
+				android:id="@+id/layout_saved_filters"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_small"
+				app:title="@string/saved_filters">
+
+				<org.dokiteam.doki.core.ui.widgets.ChipsView
+					android:id="@+id/chips_saved_filters"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginHorizontal="@dimen/margin_small"
+					android:layout_marginTop="@dimen/margin_small"
+					app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
 
 			</org.dokiteam.doki.filter.ui.FilterFieldLayout>
 
@@ -274,14 +273,41 @@
 		</LinearLayout>
 	</androidx.core.widget.NestedScrollView>
 
-	<com.google.android.material.button.MaterialButton
-		android:id="@+id/button_save_filter"
-		style="@style/Widget.Material3.Button"
+	<com.google.android.material.dockedtoolbar.DockedToolbarLayout
+		android:id="@+id/docked_toolbar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginHorizontal="@dimen/margin_small"
-		android:layout_marginTop="@dimen/margin_small"
-		android:layout_marginBottom="@dimen/margin_normal"
-		android:text="@string/save"
-		android:enabled="false" />
+		android:fitsSystemWindows="false">
+
+		<LinearLayout
+			android:id="@+id/layout_bottom"
+			android:layout_width="match_parent"
+			android:layout_height="@dimen/m3_comp_toolbar_docked_container_height"
+			android:gravity="center_vertical">
+
+			<com.google.android.material.button.MaterialButton
+				android:id="@+id/button_reset"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginEnd="@dimen/margin_small"
+				android:layout_weight="1"
+				android:enabled="false"
+				android:text="@string/reset"
+				tools:enabled="true" />
+
+			<com.google.android.material.button.MaterialButton
+				android:id="@+id/button_save"
+				style="?materialButtonTonalStyle"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="@dimen/margin_small"
+				android:layout_weight="1"
+				android:enabled="false"
+				android:text="@string/save"
+				tools:enabled="true"
+				tools:ignore="ButtonStyle" />
+
+		</LinearLayout>
+	</com.google.android.material.dockedtoolbar.DockedToolbarLayout>
+
 </LinearLayout>
