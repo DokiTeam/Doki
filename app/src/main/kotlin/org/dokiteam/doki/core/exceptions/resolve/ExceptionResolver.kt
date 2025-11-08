@@ -16,6 +16,7 @@ import org.dokiteam.doki.R
 import org.dokiteam.doki.browser.BrowserActivity
 import org.dokiteam.doki.browser.cloudflare.CloudFlareActivity
 import org.dokiteam.doki.core.exceptions.CloudFlareProtectedException
+import org.dokiteam.doki.core.exceptions.EmptyMangaException
 import org.dokiteam.doki.core.exceptions.InteractiveActionRequiredException
 import org.dokiteam.doki.core.exceptions.ProxyConfigException
 import org.dokiteam.doki.core.exceptions.UnsupportedSourceException
@@ -25,6 +26,7 @@ import org.dokiteam.doki.core.prefs.AppSettings
 import org.dokiteam.doki.core.ui.dialog.buildAlertDialog
 import org.dokiteam.doki.core.util.ext.isHttpUrl
 import org.dokiteam.doki.core.util.ext.restartApplication
+import org.dokiteam.doki.details.ui.pager.EmptyMangaReason
 import org.dokiteam.doki.parsers.exception.AuthRequiredException
 import org.dokiteam.doki.parsers.exception.NotFoundException
 import org.dokiteam.doki.parsers.model.Manga
@@ -80,6 +82,16 @@ class ExceptionResolver private constructor(
 
             is NotFoundException -> {
                 openInBrowser(e.url)
+                false
+            }
+
+            is EmptyMangaException -> {
+                when (e.reason) {
+                    EmptyMangaReason.NO_CHAPTERS -> openAlternatives(e.manga)
+                    EmptyMangaReason.LOADING_ERROR -> Unit
+                    EmptyMangaReason.RESTRICTED -> host.router.openBrowser(e.manga)
+                    else -> Unit
+                }
                 false
             }
 
@@ -228,6 +240,12 @@ class ExceptionResolver private constructor(
             is ProxyConfigException -> R.string.settings
 
             is InteractiveActionRequiredException -> R.string._continue
+
+            is EmptyMangaException -> when (e.reason) {
+                EmptyMangaReason.RESTRICTED -> if (e.manga.publicUrl.isHttpUrl()) R.string.open_in_browser else 0
+                EmptyMangaReason.NO_CHAPTERS -> R.string.alternatives
+                else -> 0
+            }
 
             else -> 0
         }
