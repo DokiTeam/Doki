@@ -26,6 +26,7 @@ import org.dokiteam.doki.backups.data.model.CategoryBackup
 import org.dokiteam.doki.backups.data.model.FavouriteBackup
 import org.dokiteam.doki.backups.data.model.HistoryBackup
 import org.dokiteam.doki.backups.data.model.MangaBackup
+import org.dokiteam.doki.backups.data.model.SavedFilterBackup
 import org.dokiteam.doki.backups.data.model.ScrobblingBackup
 import org.dokiteam.doki.backups.data.model.SourceBackup
 import org.dokiteam.doki.backups.data.model.StatisticBackup
@@ -34,6 +35,8 @@ import org.dokiteam.doki.core.db.MangaDatabase
 import org.dokiteam.doki.core.prefs.AppSettings
 import org.dokiteam.doki.core.util.CompositeResult
 import org.dokiteam.doki.core.util.progress.Progress
+import org.dokiteam.doki.explore.data.MangaSourcesRepository
+import org.dokiteam.doki.filter.data.SavedFiltersRepository
 import org.dokiteam.doki.parsers.util.runCatchingCancellable
 import org.dokiteam.doki.reader.data.TapGridSettings
 import java.io.InputStream
@@ -45,9 +48,11 @@ import javax.inject.Inject
 
 @Reusable
 class BackupRepository @Inject constructor(
-	private val database: MangaDatabase,
-	private val settings: AppSettings,
-	private val tapGridSettings: TapGridSettings,
+    private val database: MangaDatabase,
+    private val settings: AppSettings,
+    private val tapGridSettings: TapGridSettings,
+    private val mangaSourcesRepository: MangaSourcesRepository,
+    private val savedFiltersRepository: SavedFiltersRepository,
 ) {
 
 	private val json = Json {
@@ -123,6 +128,18 @@ class BackupRepository @Inject constructor(
 					data = database.getStatsDao().dumpEnabled().map { StatisticBackup(it) },
 					serializer = serializer(),
 				)
+
+                BackupSection.SAVED_FILTERS -> {
+                    val sources = mangaSourcesRepository.getEnabledSources()
+                    val filters = sources.flatMap { source ->
+                        savedFiltersRepository.getAll(source)
+                    }
+                    output.writeJsonArray(
+                        section = BackupSection.SAVED_FILTERS,
+                        data = filters.asFlow().map { SavedFilterBackup(it) },
+                        serializer = serializer(),
+                    )
+                }
 			}
 			progress?.emit(commonProgress)
 			commonProgress++
@@ -184,6 +201,15 @@ class BackupRepository @Inject constructor(
 					BackupSection.STATS -> input.readJsonArray<StatisticBackup>(serializer()).restoreToDb {
 						getStatsDao().upsert(it.toEntity())
 					}
+
+                    BackupSection.SAVED_FILTERS -> input.readJsonArray<SavedFilterBackup>(serializer())
+                        .restoreWithoutTransaction {
+                            savedFiltersRepository.save(
+                                source = it.source,
+                                name = it.name,
+                                filter = it.filter,
+                            )
+                        }
 
 					null -> CompositeResult.EMPTY // skip unknown entries
 				}
@@ -281,4 +307,12 @@ class BackupRepository @Inject constructor(
 			}
 		}
 	}
+
+    private suspend inline fun <T> Sequence<T>.restoreWithoutTransaction(crossinline block: suspend (T) -> Unit): CompositeResult {
+        return fold(CompositeResult.EMPTY) { result, item ->
+            result + runCatchingCancellable {
+                block(item)
+            }
+        }
+    }
 }
