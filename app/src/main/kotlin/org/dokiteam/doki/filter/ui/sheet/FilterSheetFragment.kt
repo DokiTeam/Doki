@@ -124,6 +124,9 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 				// You could potentially use other visual customizations if needed
 				// Need to debug, keep Android 5 compatible
 				// Cant use scrollIndicators = 0 in Android <= M
+				// Debugging
+				binding.scrollView.isVerticalScrollBarEnabled = false
+				binding.scrollView.isHorizontalScrollBarEnabled = false
 			}
 		}
 		val filter = FilterCoordinator.require(this)
