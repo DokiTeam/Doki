@@ -98,17 +98,16 @@ class DetailsLoadUseCase @Inject constructor(
 			)
 		} else {
 			val remoteDetails = getDetails(remoteManga, force).getOrNull()
-			emit(
-				MangaDetails(
-					manga = remoteDetails ?: remoteManga,
-					localManga = LocalManga(localDetails),
-					override = override,
-					description = (remoteDetails ?: localDetails).description?.parseAsHtml(withImages = true),
-					isLoaded = true,
-				),
+			val mangaDetails = MangaDetails(
+				manga = remoteDetails ?: remoteManga,
+				localManga = LocalManga(localDetails),
+				override = override,
+				description = (remoteDetails ?: localDetails).description?.parseAsHtml(withImages = true),
+				isLoaded = true,
 			)
+			emit(mangaDetails)
 			if (remoteDetails != null) {
-				mangaDataRepository.updateChapters(remoteDetails)
+				mangaDataRepository.updateChapters(mangaDetails.toManga())
 			}
 		}
 	}
