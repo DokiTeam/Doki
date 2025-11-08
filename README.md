@@ -36,8 +36,20 @@ https://github.com/DokiTeam/doki-exts/issues/new/
 
 ****
 
-## Disclaimer
+### License
+
+[![GNU GPLv3 Image](https://www.gnu.org/graphics/gplv3-127x51.png)](http://www.gnu.org/licenses/gpl-3.0.en.html)
+
+<div align="left">
+
+You may copy, distribute and modify the software as long as you track changes/dates in source files. Any modifications
+to or software including (via compiler) GPL-licensed code must also be made available under the GPL along with build &
+install instructions.
+
+</div>
+
+### Disclaimer
 
 **`¯\_(ツ)_/¯`**
 
-**This source has been built by contributors / users, the content inside is all available content, but where is it, no one knows. No one knows how it works.**
+This source has been built by contributors / users, the content inside is all available content, but where is it, no one knows. No one knows how it works.
