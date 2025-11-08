@@ -12,6 +12,8 @@ import kotlinx.coroutines.runBlocking
 import org.dokiteam.doki.backups.data.BackupRepository
 import org.dokiteam.doki.core.db.MangaDatabase
 import org.dokiteam.doki.core.prefs.AppSettings
+import org.dokiteam.doki.explore.data.MangaSourcesRepository
+import org.dokiteam.doki.filter.data.SavedFiltersRepository
 import org.dokiteam.doki.reader.data.TapGridSettings
 import java.io.File
 import java.io.FileDescriptor
@@ -39,9 +41,17 @@ class AppBackupAgent : BackupAgent() {
 		val file = createBackupFile(
 			this,
 			BackupRepository(
-				MangaDatabase(context = applicationContext),
-				AppSettings(applicationContext),
-				TapGridSettings(applicationContext),
+                database = MangaDatabase(context = applicationContext),
+                settings = AppSettings(applicationContext),
+                tapGridSettings = TapGridSettings(applicationContext),
+                mangaSourcesRepository = MangaSourcesRepository(
+                    context = applicationContext,
+                    db = MangaDatabase(context = applicationContext),
+                    settings = AppSettings(applicationContext),
+                ),
+                savedFiltersRepository = SavedFiltersRepository(
+                    context = applicationContext,
+                ),
 			),
 		)
 		try {
@@ -67,6 +77,14 @@ class AppBackupAgent : BackupAgent() {
 					database = MangaDatabase(applicationContext),
 					settings = AppSettings(applicationContext),
 					tapGridSettings = TapGridSettings(applicationContext),
+                    mangaSourcesRepository = MangaSourcesRepository(
+                        context = applicationContext,
+                        db = MangaDatabase(context = applicationContext),
+                        settings = AppSettings(applicationContext),
+                    ),
+                    savedFiltersRepository = SavedFiltersRepository(
+                        context = applicationContext,
+                    ),
 				),
 			)
 			destination.delete()
