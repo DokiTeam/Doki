@@ -1,5 +1,6 @@
 package org.dokiteam.doki.filter.ui.sheet
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -116,7 +117,14 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		super.onViewBindingCreated(binding, savedInstanceState)
 		if (dialog == null) {
 			binding.layoutBody.updatePadding(top = binding.layoutBody.paddingBottom)
-			binding.scrollView.scrollIndicators = 0
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+				binding.scrollView.scrollIndicators = 0
+			} else {
+				// On older versions, indicators will show by default
+				// You could potentially use other visual customizations if needed
+				// Need to debug, keep Android 5 compatible
+				// Cant use scrollIndicators = 0 in Android <= M
+			}
 		}
 		val filter = FilterCoordinator.require(this)
 		filter.sortOrder.observe(viewLifecycleOwner, this::onSortOrderChanged)
