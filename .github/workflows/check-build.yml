@@ -1,4 +1,4 @@
-name: Build latest commits
+name: Check & Compile latest commits
 
 on:
     workflow_dispatch:
