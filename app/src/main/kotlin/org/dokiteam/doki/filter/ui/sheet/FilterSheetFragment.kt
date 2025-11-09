@@ -1,20 +1,32 @@
 package org.dokiteam.doki.filter.ui.sheet
 
 import android.os.Bundle
+import android.text.InputFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import com.google.android.material.chip.Chip
 import com.google.android.material.slider.RangeSlider
 import com.google.android.material.slider.Slider
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import org.dokiteam.doki.R
 import org.dokiteam.doki.core.model.titleResId
 import org.dokiteam.doki.core.nav.router
+import org.dokiteam.doki.core.ui.dialog.buildAlertDialog
+import org.dokiteam.doki.core.ui.dialog.setEditText
 import org.dokiteam.doki.core.ui.model.titleRes
 import org.dokiteam.doki.core.ui.sheet.BaseAdaptiveSheet
 import org.dokiteam.doki.core.ui.widgets.ChipsView
@@ -26,8 +38,9 @@ import org.dokiteam.doki.core.util.ext.parentView
 import org.dokiteam.doki.core.util.ext.setValueRounded
 import org.dokiteam.doki.core.util.ext.setValuesRounded
 import org.dokiteam.doki.databinding.SheetFilterBinding
+import org.dokiteam.doki.filter.data.PersistableFilter
+import org.dokiteam.doki.filter.data.PersistableFilter.Companion.MAX_TITLE_LENGTH
 import org.dokiteam.doki.filter.ui.FilterCoordinator
-import org.dokiteam.doki.filter.data.SavedFiltersRepository
 import org.dokiteam.doki.filter.ui.model.FilterProperty
 import org.dokiteam.doki.parsers.model.ContentRating
 import org.dokiteam.doki.parsers.model.ContentType
@@ -38,78 +51,16 @@ import org.dokiteam.doki.parsers.model.SortOrder
 import org.dokiteam.doki.parsers.model.YEAR_UNKNOWN
 import org.dokiteam.doki.parsers.util.toIntUp
 import java.util.Locale
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import android.widget.EditText
 
 class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 	AdapterView.OnItemSelectedListener,
-	ChipsView.OnChipClickListener {
+	View.OnClickListener,
+	ChipsView.OnChipClickListener,
+	ChipsView.OnChipLongClickListener,
+	ChipsView.OnChipCloseClickListener {
 
 	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetFilterBinding {
 		return SheetFilterBinding.inflate(inflater, container, false)
-	}
-
-	private fun onSavedPresetsChanged(list: List<SavedFiltersRepository.Preset>, selectedId: Long?) {
-		val b = viewBinding ?: return
-		if (list.isEmpty()) {
-			b.layoutSavedFilters.isGone = true
-			b.chipsSavedFilters.setChips(emptyList())
-			return
-		}
-		b.layoutSavedFilters.isGone = false
-		val chips = list.map { p ->
-			ChipsView.ChipModel(
-				title = p.name,
-				isChecked = p.id == selectedId,
-				data = p,
-			)
-		}
-		b.chipsSavedFilters.setChips(chips)
-	}
-
-	private fun promptPresetName(onSubmit: (String) -> Unit) {
-		val ctx = requireContext()
-		val input = EditText(ctx)
-		MaterialAlertDialogBuilder(ctx)
-			.setTitle(R.string.enter_name)
-			.setView(input)
-			.setPositiveButton(R.string.save) { d, _ ->
-				val text = input.text?.toString()?.trim()
-				if (!text.isNullOrEmpty()) onSubmit(text)
-				d.dismiss()
-			}
-			.setNegativeButton(android.R.string.cancel) { d, _ -> d.dismiss() }
-			.show()
-	}
-
-	private fun showPresetOptions(filter: FilterCoordinator, preset: SavedFiltersRepository.Preset) {
-		val ctx = requireContext()
-		val items = arrayOf(getString(R.string.edit), getString(R.string.delete))
-		MaterialAlertDialogBuilder(ctx)
-			.setItems(items) { d, which ->
-				when (which) {
-					0 -> promptRename(filter, preset)
-					1 -> filter.deletePreset(preset.id)
-				}
-				d.dismiss()
-			}
-			.show()
-	}
-
-	private fun promptRename(filter: FilterCoordinator, preset: SavedFiltersRepository.Preset) {
-		val ctx = requireContext()
-		val input = EditText(ctx)
-		input.setText(preset.name)
-		MaterialAlertDialogBuilder(ctx)
-			.setTitle(R.string.edit)
-			.setView(input)
-			.setPositiveButton(R.string.save) { d, _ ->
-				val text = input.text?.toString()?.trim()
-				if (!text.isNullOrEmpty()) filter.renamePreset(preset.id, text)
-				d.dismiss()
-			}
-			.setNegativeButton(android.R.string.cancel) { d, _ -> d.dismiss() }
-			.show()
 	}
 
 	override fun onViewBindingCreated(binding: SheetFilterBinding, savedInstanceState: Bundle?) {
@@ -130,6 +81,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		filter.demographics.observe(viewLifecycleOwner, this::onDemographicsChanged)
 		filter.year.observe(viewLifecycleOwner, this::onYearChanged)
 		filter.yearRange.observe(viewLifecycleOwner, this::onYearRangeChanged)
+		filter.savedFilters.observe(viewLifecycleOwner, ::onSavedPresetsChanged)
 
 		binding.layoutGenres.setTitle(
 			if (filter.capabilities.isMultipleTagsSupported) {
@@ -141,12 +93,15 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		binding.spinnerLocale.onItemSelectedListener = this
 		binding.spinnerOriginalLocale.onItemSelectedListener = this
 		binding.spinnerOrder.onItemSelectedListener = this
+		binding.chipsSavedFilters.onChipClickListener = this
 		binding.chipsState.onChipClickListener = this
 		binding.chipsTypes.onChipClickListener = this
 		binding.chipsContentRating.onChipClickListener = this
 		binding.chipsDemographics.onChipClickListener = this
 		binding.chipsGenres.onChipClickListener = this
 		binding.chipsGenresExclude.onChipClickListener = this
+		binding.chipsSavedFilters.onChipLongClickListener = this
+		binding.chipsSavedFilters.onChipCloseClickListener = this
 		binding.sliderYear.addOnChangeListener(this::onSliderValueChange)
 		binding.sliderYearsRange.addOnChangeListener(this::onRangeSliderValueChange)
 		binding.layoutGenres.setOnMoreButtonClickListener {
@@ -155,46 +110,34 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		binding.layoutGenresExclude.setOnMoreButtonClickListener {
 			router.showTagsCatalogSheet(excludeMode = true)
 		}
-
-		binding.chipsSavedFilters.onChipClickListener = ChipsView.OnChipClickListener { chip, data ->
-			when (data) {
-				is SavedFiltersRepository.Preset -> filter.applyPreset(data)
-			}
-		}
-		binding.chipsSavedFilters.onChipLongClickListener = ChipsView.OnChipLongClickListener { chip, data ->
-			when (data) {
-				is SavedFiltersRepository.Preset -> {
-					showPresetOptions(filter, data)
-					true
-				}
-				else -> false
-			}
-		}
-
-		filter.savedPresets.observe(viewLifecycleOwner) { list ->
-			val selectedId = filter.selectedPresetId.value
-			onSavedPresetsChanged(list, selectedId)
-		}
-		filter.selectedPresetId.observe(viewLifecycleOwner) { selectedId ->
-			onSavedPresetsChanged(filter.savedPresets.value, selectedId)
-		}
-
 		filter.observe().observe(viewLifecycleOwner) {
-			binding.buttonSaveFilter.isEnabled = filter.isFilterApplied
+			binding.buttonReset.isEnabled = it.listFilter.isNotEmpty()
 		}
-		binding.buttonSaveFilter.setOnClickListener {
-			promptPresetName { name ->
-				filter.saveCurrentPreset(name)
+		combine(
+			filter.observe().map { it.listFilter.isNotEmpty() }.distinctUntilChanged(),
+			filter.savedFilters.map { it.selectedItems.isEmpty() }.distinctUntilChanged(),
+			Boolean::and,
+		).flowOn(Dispatchers.Default)
+			.observe(viewLifecycleOwner) {
+				binding.buttonSave.isEnabled = it
 			}
-		}
+		binding.buttonSave.setOnClickListener(this)
+		binding.buttonReset.setOnClickListener(this)
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
 		val typeMask = WindowInsetsCompat.Type.systemBars()
-		viewBinding?.scrollView?.updatePadding(
-			bottom = insets.getInsets(typeMask).bottom,
-		)
+		viewBinding?.layoutBottom?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			bottomMargin = insets.getInsets(typeMask).bottom
+		}
 		return insets.consume(v, typeMask, bottom = true)
+	}
+
+	override fun onClick(v: View) {
+		when (v.id) {
+			R.id.button_reset -> FilterCoordinator.require(this).reset()
+			R.id.button_save -> onSaveFilterClick()
+		}
 	}
 
 	override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
@@ -255,7 +198,27 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 			is ContentType -> filter.toggleContentType(data, !chip.isChecked)
 			is ContentRating -> filter.toggleContentRating(data, !chip.isChecked)
 			is Demographic -> filter.toggleDemographic(data, !chip.isChecked)
+			is PersistableFilter -> filter.setAdjusted(data.filter)
 			null -> router.showTagsCatalogSheet(excludeMode = chip.parentView?.id == R.id.chips_genresExclude)
+		}
+	}
+
+	override fun onChipLongClick(chip: Chip, data: Any?): Boolean {
+		return when (data) {
+			is PersistableFilter -> {
+				showSavedFilterMenu(chip, data)
+				true
+			}
+
+			else -> false
+		}
+	}
+
+	override fun onChipCloseClick(chip: Chip, data: Any?) {
+		when (data) {
+			is PersistableFilter -> {
+				showSavedFilterMenu(chip, data)
+			}
 		}
 	}
 
@@ -450,5 +413,89 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 			),
 		)
 		b.sliderYearsRange.setValuesRounded(currentValueFrom, currentValueTo)
+	}
+
+	private fun onSavedPresetsChanged(value: FilterProperty<PersistableFilter>) {
+		val b = viewBinding ?: return
+		b.layoutSavedFilters.isGone = value.isEmpty()
+		if (value.isEmpty()) {
+			return
+		}
+		val chips = value.availableItems.map { f ->
+			ChipsView.ChipModel(
+				title = f.name,
+				isChecked = f in value.selectedItems,
+				data = f,
+				isDropdown = true,
+			)
+		}
+		b.chipsSavedFilters.setChips(chips)
+	}
+
+	private fun showSavedFilterMenu(anchor: View, preset: PersistableFilter) {
+		val menu = PopupMenu(context ?: return, anchor)
+		val filter = FilterCoordinator.require(this)
+		menu.inflate(R.menu.popup_saved_filter)
+		menu.setOnMenuItemClickListener { menuItem ->
+			when (menuItem.itemId) {
+				R.id.action_delete -> filter.deleteSavedFilter(preset.id)
+				R.id.action_rename -> onRenameFilterClick(preset)
+			}
+			true
+		}
+		menu.show()
+	}
+
+	private fun onSaveFilterClick() {
+		val filter = FilterCoordinator.require(this)
+		buildAlertDialog(context ?: return) {
+			val input = setEditText(
+				inputType = EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES,
+				singleLine = true,
+			)
+			input.setHint(R.string.enter_name)
+			input.filters += InputFilter.LengthFilter(MAX_TITLE_LENGTH)
+			setTitle(R.string.save_filter)
+			setPositiveButton(R.string.save) { d, _ ->
+				val text = input.text?.toString()?.trim()
+				if (!text.isNullOrEmpty()) {
+					filter.saveCurrentFilter(text)
+				} else {
+					Snackbar.make(
+						viewBinding?.scrollView ?: return@setPositiveButton,
+						R.string.invalid_value_message,
+						Snackbar.LENGTH_SHORT,
+					).show()
+				}
+			}
+			setNegativeButton(android.R.string.cancel, null)
+		}.show()
+	}
+
+	private fun onRenameFilterClick(preset: PersistableFilter) {
+		val filter = FilterCoordinator.require(this)
+		buildAlertDialog(context ?: return) {
+			val input = setEditText(
+				inputType = EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES,
+				singleLine = true,
+			)
+			input.filters += InputFilter.LengthFilter(MAX_TITLE_LENGTH)
+			input.setHint(R.string.enter_name)
+			input.setText(preset.name)
+			setTitle(R.string.rename)
+			setPositiveButton(R.string.save) { _, _ ->
+				val text = input.text?.toString()?.trim()
+				if (!text.isNullOrEmpty()) {
+					filter.renameSavedFilter(preset.id, text)
+				} else {
+					Snackbar.make(
+						viewBinding?.scrollView ?: return@setPositiveButton,
+						R.string.invalid_value_message,
+						Snackbar.LENGTH_SHORT,
+					).show()
+				}
+			}
+			setNegativeButton(android.R.string.cancel, null)
+		}.show()
 	}
 }

@@ -2,10 +2,16 @@ package org.dokiteam.doki.core.ui.dialog
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.view.inputmethod.EditorInfo
 import android.widget.CompoundButton.OnCheckedChangeListener
+import android.widget.EditText
+import android.widget.FrameLayout
 import androidx.annotation.StringRes
 import androidx.annotation.UiContext
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -65,4 +71,28 @@ fun <B : AlertDialog.Builder> B.setRecyclerViewList(adapter: RecyclerView.Adapte
 	recyclerView.clipToPadding = false
 	recyclerView.adapter = adapter
 	setView(recyclerView)
+}
+
+fun <B : AlertDialog.Builder> B.setEditText(
+	inputType: Int,
+	singleLine: Boolean,
+): EditText {
+	val editText = AppCompatEditText(context)
+	editText.inputType = inputType
+	if (singleLine) {
+		editText.setSingleLine()
+		editText.imeOptions = EditorInfo.IME_ACTION_DONE
+	}
+	val layout = FrameLayout(context)
+	val lp = FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+	val horizontalMargin = context.resources.getDimensionPixelOffset(R.dimen.screen_padding)
+	lp.setMargins(
+		horizontalMargin,
+		context.resources.getDimensionPixelOffset(R.dimen.margin_small),
+		horizontalMargin,
+		0,
+	)
+	layout.addView(editText, lp)
+	setView(layout)
+	return editText
 }
