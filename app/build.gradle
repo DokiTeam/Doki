@@ -17,7 +17,7 @@ android {
 
 	defaultConfig {
 		applicationId 'org.dokiteam.doki'
-		minSdk = 21
+		minSdk = 23
 		targetSdk = 36
 		versionCode = 1011
 		versionName = '1.2.7'
