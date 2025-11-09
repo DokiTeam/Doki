@@ -19,8 +19,10 @@ android {
 		applicationId 'org.dokiteam.doki'
 		minSdk = 21
 		targetSdk = 36
-        versionCode = 1014
-        versionName = 'PRODUCTION'
+
+        versionCode = 1
+        versionName "1.0"
+
 		generatedDensities = []
 		testInstrumentationRunner 'org.dokiteam.doki.HiltTestRunner'
 		ksp {
@@ -43,6 +45,15 @@ android {
         resValue "string", "github_updates_repo", ghUser
         resValue 'string', 'tg_backup_bot_token', tgKey
 	}
+    signingConfigs {
+        DokiApp {
+            storeFile file("sign.p12")
+            storePassword "kotatsuanddokiarethebest"
+            keyAlias "DokiApp"
+            keyPassword "kotatsuanddokiarethebest"
+            storeType "PKCS12"
+        }
+    }
 	buildTypes {
 		debug {
 			applicationIdSuffix = '.debug'
@@ -51,7 +62,15 @@ android {
 			minifyEnabled true
 			shrinkResources true
 			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.DokiApp
 		}
+        legacy {
+            applicationIdSuffix = '.legacy'
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.DokiApp
+        }
 	}
 	buildFeatures {
 		viewBinding true
@@ -105,6 +124,20 @@ android {
 			freeCompilerArgs += ['-opt-in=org.dokiteam.doki.parsers.InternalParsersApi']
 		}
 	}
+    applicationVariants.configureEach { variant ->
+        def now = LocalDateTime.now()
+        if (variant.name == 'legacy') {
+            variant.outputs.each { output ->
+                output.versionCodeOverride = now.format("yyMMdd").toInteger()
+                output.versionNameOverride = 'C' + now.format("yyMMdd")
+            }
+        } else if (variant.name == 'release') {
+            variant.outputs.each { output ->
+                output.versionCodeOverride = now.format("yyMMdd").toInteger()
+                output.versionNameOverride = 'P' + now.format("yyMMdd")
+            }
+        }
+    }
 }
 dependencies {
 	implementation(libs.doki.exts) {

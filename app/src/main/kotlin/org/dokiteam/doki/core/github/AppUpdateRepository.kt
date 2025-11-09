@@ -27,6 +27,7 @@ import javax.inject.Singleton
 
 private const val CONTENT_TYPE_APK = "application/vnd.android.package-archive"
 private const val BUILD_TYPE_RELEASE = "release"
+private const val BUILD_TYPE_LEGACY = "legacy"
 
 @Singleton
 class AppUpdateRepository @Inject constructor(
@@ -49,27 +50,38 @@ class AppUpdateRepository @Inject constructor(
 
 	fun observeAvailableUpdate() = availableUpdate.asStateFlow()
 
-	suspend fun getAvailableVersions(): List<AppVersion> {
-		val request = Request.Builder()
-			.get()
-			.url(releasesUrl)
-		val jsonArray = okHttp.newCall(request.build()).await().parseJsonArray()
-		return jsonArray.mapJSONNotNull { json ->
-			val asset = json.optJSONArray("assets")?.find { jo ->
-				jo.optString("content_type") == CONTENT_TYPE_APK
-			} ?: return@mapJSONNotNull null
-			AppVersion(
-				id = json.getLong("id"),
-				url = json.getString("html_url"),
-				name = json.getString("name"),
-				apkSize = asset.getLong("size"),
-				apkUrl = asset.getString("browser_download_url"),
-				description = json.getString("body"),
-			)
-		}
-	}
+    suspend fun getAvailableVersions(): List<AppVersion> {
+        val request = Request.Builder()
+            .get()
+            .url(releasesUrl)
+        val jsonArray = okHttp.newCall(request.build()).await().parseJsonArray()
 
-	suspend fun fetchUpdate(): AppVersion? = withContext(Dispatchers.Default) {
+        val targetSuffix = when (BuildConfig.BUILD_TYPE) {
+            BUILD_TYPE_LEGACY -> "legacy-release.apk"
+            else -> "release.apk"
+        }
+
+        return jsonArray.mapJSONNotNull { json ->
+            val asset = json.optJSONArray("assets")?.find { jo ->
+                jo.optString("content_type") == CONTENT_TYPE_APK &&
+                    jo.optString("name").endsWith(targetSuffix)
+            } ?: return@mapJSONNotNull null
+            val name = json.getString("name")
+                .removePrefix("P")
+                .removePrefix("C")
+
+            AppVersion(
+                id = json.getLong("id"),
+                url = json.getString("html_url"),
+                name = name,
+                apkSize = asset.getLong("size"),
+                apkUrl = asset.getString("browser_download_url"),
+                description = json.getString("body"),
+            )
+        }
+    }
+
+    suspend fun fetchUpdate(): AppVersion? = withContext(Dispatchers.Default) {
 		if (!isUpdateSupported()) {
 			return@withContext null
 		}

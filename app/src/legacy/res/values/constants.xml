@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="account_type_sync" translatable="false">org.doki.legacy.sync</string>
+    <string name="sync_authority_history" translatable="false">org.dokiteam.doki.legacy.history</string>
+    <string name="sync_authority_favourites" translatable="false">org.dokiteam.doki.legacy.favourites</string>
+</resources>

@@ -31,36 +31,50 @@ data class VersionId(
 		return variantNumber.compareTo(other.variantNumber)
 	}
 
-	private fun variantWeight(variantType: String) = when (variantType.lowercase(Locale.ROOT)) {
-		"a", "alpha" -> 1
-		"b", "beta" -> 2
-		"rc" -> 4
-		"" -> 8
-		else -> 0
-	}
+    private fun variantWeight(variantType: String) = when (variantType.lowercase(Locale.ROOT)) {
+        "a", "alpha" -> 1
+        "b", "beta" -> 2
+        "rc" -> 4
+        "C" -> 6
+        "P" -> 8
+        "" -> 8
+        else -> 0
+    }
 }
 
 val VersionId.isStable: Boolean
 	get() = variantType.isEmpty()
 
 fun VersionId(versionName: String): VersionId {
-	if (versionName.startsWith('n', ignoreCase = true)) {
-		// Nightly build
-		return VersionId(
-			major = 0,
-			minor = 0,
-			build = versionName.digits().toIntOrNull() ?: 0,
-			variantType = "n",
-			variantNumber = 0,
-		)
-	}
-	val parts = versionName.substringBeforeLast('-').split('.')
-	val variant = versionName.substringAfterLast('-', "")
-	return VersionId(
-		major = parts.getOrNull(0)?.toIntOrNull() ?: 0,
-		minor = parts.getOrNull(1)?.toIntOrNull() ?: 0,
-		build = parts.getOrNull(2)?.toIntOrNull() ?: 0,
-		variantType = variant.filter(Char::isLetter),
-		variantNumber = variant.filter(Char::isDigit).toIntOrNull() ?: 0,
-	)
+    if (versionName.startsWith('c', ignoreCase = true)) {
+        val code = versionName.digits().toIntOrNull() ?: 0
+        return VersionId(
+            major = 0,
+            minor = 0,
+            build = code,
+            variantType = "C",
+            variantNumber = 0
+        )
+    }
+
+    if (versionName.startsWith('p', ignoreCase = true)) {
+        val code = versionName.digits().toIntOrNull() ?: 0
+        return VersionId(
+            major = 0,
+            minor = 0,
+            build = code,
+            variantType = "P",
+            variantNumber = 0
+        )
+    }
+
+    val parts = versionName.substringBeforeLast('-').split('.')
+    val variant = versionName.substringAfterLast('-', "")
+    return VersionId(
+        major = parts.getOrNull(0)?.toIntOrNull() ?: 0,
+        minor = parts.getOrNull(1)?.toIntOrNull() ?: 0,
+        build = parts.getOrNull(2)?.toIntOrNull() ?: 0,
+        variantType = variant.filter(Char::isLetter),
+        variantNumber = variant.filter(Char::isDigit).toIntOrNull() ?: 0
+    )
 }
