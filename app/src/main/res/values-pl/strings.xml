@@ -707,7 +707,6 @@
     <string name="content_type_doujinshi">Doujinshi</string>
     <string name="source_code">Kod źródłowy</string>
     <string name="user_manual">Instrukcja użytkownika</string>
-    <string name="telegram_group">Grupa Telegram</string>
     <string name="debug">Debugowanie</string>
     <string name="error_image_format">Niewspierany format obrazu: %s</string>
     <string name="downloads_background">Pobieranie w tle</string>

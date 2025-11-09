@@ -720,7 +720,6 @@
 	<string name="debug">调试</string>
 	<string name="source_code">源代码</string>
 	<string name="user_manual">用户手册</string>
-	<string name="telegram_group">Telegram 群组</string>
 	<string name="manga_with_downloaded_chapters">当存在已下载章节的漫画时</string>
 	<string name="error_image_format">不支持的图片格式：%s</string>
 	<string name="save_manga">下载漫画</string>

@@ -709,7 +709,6 @@
     <string name="content_type_image_set">Set ng mga imahe</string>
     <string name="debug">Mag-debug</string>
     <string name="user_manual">Manwal ng gumagamit</string>
-    <string name="telegram_group">Grupo sa Telegram</string>
     <string name="error_image_format">Di-suportadong format ng imahe: %s</string>
     <string name="content_type_manhua">Manhua</string>
     <string name="content_type_manhwa">Manhwa</string>

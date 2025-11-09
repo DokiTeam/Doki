@@ -732,7 +732,6 @@
     <string name="updated_long_ago">Aktualizováno dávno</string>
     <string name="scrobbler_auth_required">Přihlašte se do %s abyste mohli pokračovat</string>
     <string name="no_alternatives_found">Pro \"%s\" nebyly nalezeny žádné alternativy</string>
-    <string name="telegram_group">Telegramová slupina</string>
     <string name="allow_always">Povolit vždy</string>
     <string name="allow_once">Pouze tentokrát</string>
     <string name="landscape">Na šířku</string>

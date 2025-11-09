@@ -721,7 +721,6 @@
     <string name="debug">Отладка</string>
     <string name="source_code">Исходный код</string>
     <string name="user_manual">Руководство пользователя</string>
-    <string name="telegram_group">Группа в Telegram</string>
     <string name="error_image_format">Неподдерживаемый формат изображения: %s</string>
     <string name="genre">Жанр</string>
     <string name="save_manga">Сохранить мангу</string>

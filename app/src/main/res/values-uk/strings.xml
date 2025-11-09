@@ -727,7 +727,6 @@
     <string name="debug">Налагодження</string>
     <string name="source_code">Вихідний код</string>
     <string name="user_manual">Посібник користувача</string>
-    <string name="telegram_group">Група у Telegram</string>
     <string name="error_image_format">Формат зображення, що не підтримується: %s</string>
     <string name="error_not_image">Невірний формат: очікувалося зображення, але отримано %s</string>
     <string name="start_download">Почати завантаження</string>

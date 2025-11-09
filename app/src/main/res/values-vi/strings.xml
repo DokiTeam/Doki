@@ -718,7 +718,6 @@
     <string name="content_type_artist_cg">Họa sĩ CG</string>
     <string name="source_code">Mã nguồn</string>
     <string name="user_manual">Hướng dẫn sử dụng</string>
-    <string name="telegram_group">Nhóm Telegram</string>
     <string name="debug">Gỡ lỗi</string>
     <string name="error_image_format">Định dạng hình ảnh không được hỗ trợ: %s</string>
     <string name="save_manga">Lưu manga</string>
