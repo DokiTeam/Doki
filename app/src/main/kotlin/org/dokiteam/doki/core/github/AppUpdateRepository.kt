@@ -36,10 +36,11 @@ class AppUpdateRepository @Inject constructor(
 	@ApplicationContext context: Context,
 ) {
 
+    private val user: String = context.getString(R.string.github_updates_repo)
 	private val availableUpdate = MutableStateFlow<AppVersion?>(null)
 	private val releasesUrl = buildString {
 		append("https://api.github.com/repos/")
-		append(context.getString(R.string.github_updates_repo))
+        append("$user/build-apps")
 		append("/releases?page=1&per_page=10")
 	}
 
@@ -60,7 +61,7 @@ class AppUpdateRepository @Inject constructor(
 			AppVersion(
 				id = json.getLong("id"),
 				url = json.getString("html_url"),
-				name = json.getString("name").removePrefix("v"),
+				name = json.getString("name"),
 				apkSize = asset.getLong("size"),
 				apkUrl = asset.getString("browser_download_url"),
 				description = json.getString("body"),
