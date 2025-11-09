@@ -14,13 +14,16 @@ import androidx.viewbinding.ViewBinding
 import com.davemorrissey.labs.subscaleview.DefaultOnImageEventListener
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.dokiteam.doki.BuildConfig
 import org.dokiteam.doki.R
 import org.dokiteam.doki.core.exceptions.resolve.ExceptionResolver
+import org.dokiteam.doki.core.image.CoilImageView
 import org.dokiteam.doki.core.os.NetworkState
 import org.dokiteam.doki.core.ui.list.lifecycle.LifecycleAwareViewHolder
 import org.dokiteam.doki.core.util.ext.getDisplayMessage
+import org.dokiteam.doki.core.util.ext.isAnimatedImage
 import org.dokiteam.doki.core.util.ext.isLowRamDevice
 import org.dokiteam.doki.core.util.ext.isSerializable
 import org.dokiteam.doki.core.util.ext.observe
@@ -50,6 +53,10 @@ abstract class BasePageHolder<B : ViewBinding>(
 	)
 	protected val bindingInfo = LayoutPageInfoBinding.bind(binding.root)
 	protected abstract val ssiv: SubsamplingScaleImageView
+
+	protected val animatedView: CoilImageView? by lazy {
+		itemView.findViewById(R.id.animatedView)
+	}
 
 	protected val settings: ReaderSettings
 		get() = viewModel.settingsProducer.value
@@ -99,6 +106,9 @@ abstract class BasePageHolder<B : ViewBinding>(
 
 	fun bind(data: ReaderPage) {
 		boundData = data
+		ssiv.isVisible = true
+		animatedView?.isVisible = false
+		animatedView?.disposeImage()
 		viewModel.onBind(data.toMangaPage())
 		onBind(data)
 	}
@@ -139,6 +149,7 @@ abstract class BasePageHolder<B : ViewBinding>(
 	open fun onRecycled() {
 		viewModel.onRecycle()
 		ssiv.recycle()
+		animatedView?.disposeImage()
 	}
 
 	override fun onTrimMemory(level: Int) {
@@ -162,6 +173,7 @@ abstract class BasePageHolder<B : ViewBinding>(
 			bindingInfo.progressBar.isIndeterminate = true
 			bindingInfo.textViewStatus.setText(R.string.loading_)
 		}
+		val isAnimated = boundData?.url?.isAnimatedImage() == true
 		when (state) {
 			is PageState.Converting -> {
 				bindingInfo.textViewStatus.setText(R.string.processing_)
@@ -181,8 +193,13 @@ abstract class BasePageHolder<B : ViewBinding>(
 			}
 
 			is PageState.Loaded -> {
-				bindingInfo.textViewStatus.setText(R.string.preparing_)
-				ssiv.setImage(state.source)
+				if (isAnimated) {
+					showAnimated(boundData!!, state)
+					bindingInfo.layoutProgress.isGone = true
+				} else {
+					bindingInfo.textViewStatus.setText(R.string.preparing_)
+					ssiv.setImage(state.source)
+				}
 			}
 
 			is PageState.Loading -> {
@@ -192,6 +209,21 @@ abstract class BasePageHolder<B : ViewBinding>(
 			}
 
 			is PageState.Shown -> Unit
+		}
+	}
+
+	private fun showAnimated(page: ReaderPage, loadedState: PageState.Loaded) {
+		ssiv.isVisible = false
+		animatedView?.let {
+			it.isVisible = true
+			it.setImageAsync(page)
+		}
+		viewModel.state.update { currentState ->
+			if (currentState is PageState.Loaded) {
+				PageState.Shown(loadedState.source, loadedState.isConverted)
+			} else {
+				currentState
+			}
 		}
 	}
 

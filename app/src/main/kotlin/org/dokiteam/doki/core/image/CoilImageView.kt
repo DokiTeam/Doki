@@ -34,6 +34,8 @@ import org.dokiteam.doki.core.util.ext.decodeRegion
 import org.dokiteam.doki.core.util.ext.getAnimationDuration
 import org.dokiteam.doki.core.util.ext.isAnimationsEnabled
 import org.dokiteam.doki.core.util.ext.isNetworkError
+import org.dokiteam.doki.core.util.ext.mangaSourceExtra
+import org.dokiteam.doki.reader.ui.pager.ReaderPage
 import java.util.LinkedList
 import javax.inject.Inject
 
@@ -126,6 +128,13 @@ open class CoilImageView @JvmOverloads constructor(
 	fun setImageAsync(url: String?) = enqueueRequest(
 		newRequestBuilder()
 			.data(url)
+			.build(),
+	)
+
+	open fun setImageAsync(page: ReaderPage) = enqueueRequest(
+		newRequestBuilder()
+			.data(page.toMangaPage())
+			.mangaSourceExtra(page.source)
 			.build(),
 	)
 
