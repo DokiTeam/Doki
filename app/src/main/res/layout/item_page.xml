@@ -15,6 +15,13 @@
 		app:doubleTapZoomStyle="center"
 		app:restoreStrategy="deferred" />
 
+	<org.dokiteam.doki.core.image.CoilImageView
+		android:id="@+id/animatedView"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:scaleType="fitCenter"
+		android:visibility="gone" />
+
 	<TextView
 		android:id="@+id/textView_number"
 		android:layout_width="wrap_content"
