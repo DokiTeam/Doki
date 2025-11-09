@@ -3,7 +3,6 @@ package org.dokiteam.doki.reader.ui
 import android.app.assist.AssistContent
 import android.content.DialogInterface
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.KeyEvent
