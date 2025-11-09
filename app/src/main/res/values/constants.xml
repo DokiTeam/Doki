@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="url_github" translatable="false">https://github.com/DokiTeam/Doki</string>
-	<string name="url_telegram_web" translatable="false">https://t.me/kotatsuapp</string>
+	<string name="discord_invite_link" translatable="false">https://discord.gg/PTd2bYgz9m</string>
 	<string name="url_telegram" translatable="false">tg://resolve?domain=kotatsuapp</string>
 	<string name="url_weblate" translatable="false">https://hosted.weblate.org/engage/kotatsu</string>
 	<string name="url_user_manual" translatable="false">https://kotatsu.app/manuals/guides/getting-started/</string>
