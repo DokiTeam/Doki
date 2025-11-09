@@ -34,6 +34,7 @@ import org.dokiteam.doki.core.ui.image.TrimTransformation
 import org.dokiteam.doki.core.util.ext.bookmarkExtra
 import org.dokiteam.doki.core.util.ext.decodeRegion
 import org.dokiteam.doki.core.util.ext.getThemeColor
+import org.dokiteam.doki.core.util.ext.isAnimatedImage
 import org.dokiteam.doki.core.util.ext.isNetworkError
 import org.dokiteam.doki.core.util.ext.mangaExtra
 import org.dokiteam.doki.core.util.ext.mangaSourceExtra
@@ -105,22 +106,33 @@ class CoverImageView @JvmOverloads constructor(
 		}
 	}
 
-	fun setImageAsync(page: ReaderPage) = enqueueRequest(
-		newRequestBuilder()
+	private fun isAnimatedUrl(url: String?): Boolean = url?.isAnimatedImage() == true
+
+	private fun newRequestBuilder(applyTrim: Boolean) = super.newRequestBuilder().apply {
+		if (trimImage && applyTrim) {
+			transformations(listOf(TrimTransformation()))
+		}
+		if (hasAspectRatio) {
+			size(CoverSizeResolver(this@CoverImageView))
+		}
+	}
+
+	override fun setImageAsync(page: ReaderPage) = enqueueRequest(
+		newRequestBuilder(applyTrim = true)
 			.data(page.toMangaPage())
 			.mangaSourceExtra(page.source)
 			.build(),
 	)
 
 	fun setImageAsync(page: MangaPage) = enqueueRequest(
-		newRequestBuilder()
+		newRequestBuilder(applyTrim = true)
 			.data(page)
 			.mangaSourceExtra(page.source)
 			.build(),
 	)
 
 	fun setImageAsync(cover: Cover?) = enqueueRequest(
-		newRequestBuilder()
+		newRequestBuilder(applyTrim = !isAnimatedUrl(cover?.url))
 			.data(cover?.url)
 			.mangaSourceExtra(cover?.mangaSource)
 			.build(),
@@ -130,7 +142,7 @@ class CoverImageView @JvmOverloads constructor(
 		coverUrl: String?,
 		manga: Manga?,
 	) = enqueueRequest(
-		newRequestBuilder()
+		newRequestBuilder(applyTrim = !isAnimatedUrl(coverUrl))
 			.data(coverUrl)
 			.mangaExtra(manga)
 			.build(),
@@ -140,7 +152,7 @@ class CoverImageView @JvmOverloads constructor(
 		coverUrl: String?,
 		source: MangaSource,
 	) = enqueueRequest(
-		newRequestBuilder()
+		newRequestBuilder(applyTrim = !isAnimatedUrl(coverUrl))
 			.data(coverUrl)
 			.mangaSourceExtra(source)
 			.build(),
@@ -149,21 +161,15 @@ class CoverImageView @JvmOverloads constructor(
 	fun setImageAsync(
 		bookmark: Bookmark
 	) = enqueueRequest(
-		newRequestBuilder()
+		newRequestBuilder(applyTrim = true)
 			.data(bookmark.toMangaPage())
 			.decodeRegion(bookmark.scroll)
 			.bookmarkExtra(bookmark)
 			.build(),
 	)
 
-	override fun newRequestBuilder() = super.newRequestBuilder().apply {
-		if (trimImage) {
-			transformations(listOf(TrimTransformation()))
-		}
-		if (hasAspectRatio) {
-			size(CoverSizeResolver(this@CoverImageView))
-		}
-	}
+	@Deprecated("Use newRequestBuilder(applyTrim) instead", level = DeprecationLevel.HIDDEN)
+	override fun newRequestBuilder() = newRequestBuilder(applyTrim = true)
 
 	private inner class ErrorForegroundListener : ImageRequest.Listener {
 

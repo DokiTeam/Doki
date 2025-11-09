@@ -13,6 +13,13 @@
 		app:restoreStrategy="deferred"
 		tools:background="@tools:sample/backgrounds/scenic" />
 
+	<org.dokiteam.doki.core.image.CoilImageView
+		android:id="@+id/animatedView"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:scaleType="fitCenter"
+		android:visibility="gone" />
+
 	<ImageButton
 		android:id="@+id/button_back"
 		android:layout_width="48dp"
