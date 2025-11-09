@@ -35,8 +35,11 @@ android {
 			localProperties.load(new FileInputStream(localPropertiesFile))
 		}
 
+        def ghUser = System.getProperty("github_updates_repo", "DokiTeam")
         def tgKey = System.getProperty("tg_backup_bot_token")
             ?: localProperties.getProperty("tg_backup_bot_token", "")
+
+        resValue "string", "github_updates_repo", ghUser
         resValue 'string', 'tg_backup_bot_token', tgKey
 	}
 	buildTypes {
