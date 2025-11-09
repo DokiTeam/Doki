@@ -127,7 +127,6 @@
     <string name="debug">பிழைத்திருத்தம்</string>
     <string name="source_code">மூலக் குறியீடு</string>
     <string name="user_manual">பயனர் கையேடு</string>
-    <string name="telegram_group">தந்தி குழு</string>
     <string name="chapters_all">அனைத்தும்</string>
     <string name="error_image_format">ஆதரிக்கப்படாத பட வடிவம்: %s</string>
     <string name="error_not_image">தவறான வடிவம்: எதிர்பார்க்கப்படும் படம் ஆனால் %s கிடைத்தன</string>

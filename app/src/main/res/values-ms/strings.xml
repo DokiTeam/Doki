@@ -727,7 +727,6 @@
 	<string name="debug">Awakutu</string>
 	<string name="source_code">Kod sumber</string>
 	<string name="user_manual">Manual Pengguna</string>
-	<string name="telegram_group">Kumpulan Telegram</string>
 	<string name="error_image_format">Format imej yang tidak disokong: %s</string>
 	<string name="error_not_image">Format tidak sah: Imej yang diharapkan tetapi mendapat %s</string>
 	<string name="start_download">Mula muat turun</string>

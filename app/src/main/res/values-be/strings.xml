@@ -721,7 +721,6 @@
     <string name="debug">Адладка</string>
     <string name="source_code">Зыходны код</string>
     <string name="user_manual">Кіраўніцтва карыстальніка</string>
-    <string name="telegram_group">Група ў Telegram</string>
     <string name="error_image_format">Фармат відарыса не падтрымліваецца: %s</string>
     <string name="start_download">Пачаць загрузку</string>
     <string name="save_manga_confirm">Захаваць выбраную мангу? Гэта можа заняць трафік і месца на дыску</string>

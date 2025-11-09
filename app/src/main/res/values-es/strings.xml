@@ -720,7 +720,6 @@
     <string name="content_type_image_set">Conjunto de imágenes</string>
     <string name="user_manual">Manual de usuario</string>
     <string name="source_code">Código fuente</string>
-    <string name="telegram_group">Grupo de Telegram</string>
     <string name="debug">Depurar</string>
     <string name="error_image_format">Formato de imagen no compatible: %s</string>
     <string name="start_download">Iniciar descarga</string>

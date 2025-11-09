@@ -681,7 +681,6 @@
     <string name="unstable_feature_summary">Cette fonction est expérimentale. Assurez-vous d\'avoir une sauvegarde pour éviter la perte de données</string>
     <string name="source_code">Code source</string>
     <string name="user_manual">Manuel d\'utilisation</string>
-    <string name="telegram_group">Groupe Telegram</string>
     <string name="portrait">Portrait</string>
     <string name="landscape">Paysage</string>
     <string name="crop_pages">Recadrer les pages</string>
