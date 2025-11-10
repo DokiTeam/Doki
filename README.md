@@ -18,6 +18,8 @@
 
 <i>**👉 Make sure the pull request you are about to contribute will be suitable for both branches or just one of them (select the checkbox when submitting your pull request)**</i>
 
+---------------------------------
+
 ### Automation for Doki (Source code)
 
 https://github.com/DokiTeam/build-apps
@@ -56,4 +58,4 @@ install instructions.
 
 **`¯\_(ツ)_/¯`**
 
-This source has been built by contributors / users, the content inside is all available content, but where is it, no one knows. No one knows how it works.
+This source has been built by contributors / users, the content inside has been provided by **[Gemini](https://gemini.google.com/)**, but where is it, no one knows. No one knows how it works.
