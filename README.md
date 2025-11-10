@@ -22,6 +22,10 @@
 
 https://github.com/DokiTeam/doki-exts
 
+### Automation for Doki (Source code)
+
+https://github.com/DokiTeam/build-apps
+
 ### Report app issues
 
 https://github.com/DokiTeam/Doki/issues/new/
