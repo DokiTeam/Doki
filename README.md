@@ -18,6 +18,10 @@
 
 <i>**👉 Make sure the pull request you are about to contribute will be suitable for both branches or just one of them (select the checkbox when submitting your pull request)**</i>
 
+### Automation for Doki (Source code)
+
+https://github.com/DokiTeam/build-apps
+
 ### Extensions (Source code)
 
 https://github.com/DokiTeam/doki-exts
@@ -28,7 +32,7 @@ https://github.com/DokiTeam/Doki/issues/new/
 
 ### Report build issues
 
-https://github.com/DokiTeam/build-apps/issues/new
+https://github.com/DokiTeam/build-apps/issues/new/
 
 ### Report extension issues
 
