@@ -10,15 +10,7 @@
 **If you are new to this repository, please go to [build-apps](https://github.com/DokiTeam/build-apps) repository first.**
 
 ## Contribute
-**👋 You can contribute new features / push bug fixes for existing features in the app to this repository, but please read the [NOTE](#note) below!**
-
-## Note
-**The [legacy](https://github.com/DokiTeam/Doki/tree/legacy) branch will be the main branch. It will be suitable for Android 5.0+ devices.**<br>
-**The [base](https://github.com/DokiTeam/Doki/tree/base) branch will be the secondary branch. It will be suitable for Android 6.0+ devices**
-
-<i>**👉 Make sure the pull request you are about to contribute will be suitable for both branches or just one of them (select the checkbox when submitting your pull request)**</i>
-
----------------------------------
+**👋 You can contribute new features / push bug fixes for existing features in the app to this repository, but please read [Doki contribution guidelines](CONTRIBUTING.md) first!**
 
 ### Automation for Doki (Source code)
 
