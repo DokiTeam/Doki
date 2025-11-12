@@ -2,8 +2,8 @@
 
 **About compatibility:**
 
-+ **The [base](https://github.com/DokiTeam/Doki/tree/base) branch will be the main branch. It will only work with Android API 21, 22 / Android 5.0 and Android 5.1 devices.**<br>
-+ **The [legacy](https://github.com/DokiTeam/Doki/tree/legacy) branch will be the secondary branch. It will be suitable for Android API 23+ / Android 6.0+ devices**
++ **The [base](https://github.com/DokiTeam/Doki/tree/base) branch will be the main branch. It will be suitable for Android API 23+ / Android 6.0+ devices.**<br>
++ **The [legacy](https://github.com/DokiTeam/Doki/tree/legacy) branch will be the secondary branch. It will only work with Android API 21, 22 / Android 5.0 and Android 5.1 devices.**
 
 <i>👉 **Make sure the pull request you are about to contribute will be suitable for both branches or just one of them (select the checkbox when submitting your pull request)**</i>
 
