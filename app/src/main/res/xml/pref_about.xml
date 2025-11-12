@@ -9,7 +9,9 @@
 		android:persistent="false"
 		android:summary="@string/check_for_updates" />
 
+    <!-- TODO -->
 	<Preference
+        android:enabled="false"
 		android:fragment="org.dokiteam.doki.settings.about.changelog.ChangelogFragment"
 		android:key="changelog"
 		android:persistent="false"
@@ -30,15 +32,10 @@
 		android:title="@string/source_code" />
 
 	<Preference
+        android:enabled="false"
 		android:key="about_app_translation"
 		android:persistent="false"
 		android:summary="@string/url_weblate"
 		android:title="@string/about_app_translation_summary" />
-
-	<Preference
-		android:key="about_telegram"
-		android:persistent="false"
-		android:summary="@string/discord_invite_link"
-		android:title="@string/help_wanted" />
 
 </PreferenceScreen>

@@ -70,13 +70,6 @@ class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 				true
 			}
 
-			AppSettings.KEY_LINK_TELEGRAM -> {
-				if (!openLink(R.string.help_wanted, null)) {
-					openLink(R.string.discord_invite_link, preference.title)
-				}
-				true
-			}
-
 			else -> super.onPreferenceTreeClick(preference)
 		}
 	}
