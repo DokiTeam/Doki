@@ -1,30 +1,35 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base"
-  ],
-
+  "extends": ["config:base"],
   "enabledManagers": ["gradle-version-catalog"],
   "dependencyDashboard": true,
-
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["(^|/)libs\\.versions\\.toml$"],
+      "matchStrings": [
+        "exts\\s*=\\s*\"(?<currentDigest>[a-f0-9]+)\""
+      ],
+      "datasourceTemplate": "git-refs",
+      "depNameTemplate": "https://github.com/DokiTeam/doki-exts",
+      "currentValueTemplate": "base",
+      "packageNameTemplate": "doki-exts"
+    }
+  ],
   "packageRules": [
     {
-      "matchPackagePatterns": ["^com\\.github\\.DokiTeam:doki-exts$"],
-      "groupName": "Update extensions for Doki",
-      "description": "Update latest extensions for Doki",
-      "datasource": "github-commits",
-      "depName": "DokiTeam/doki-exts",
-      "lookupName": "DokiTeam/doki-exts#base",
-      "branchName": "renovate/update-exts",
-      "commitMessagePrefix": "chore(deps): Update new extensions from doki-exts",
-      "extractVersion": "^([a-f0-9]{10})$",
-      "replaceVersion": "{{commitShaShort}}",
+      "matchPackageNames": ["doki-exts"],
+      "groupName": "doki-exts",
+      "branchName": "renovate/doki-exts",
+      "commitMessagePrefix": "chore(deps): Update extensions / plugins for Doki",
+      "commitMessageTopic": "Replace doki-exts version with latest commit from base branch",
       "automerge": true,
       "automergeType": "branch",
       "schedule": ["daily"]
     },
     {
       "matchPackagePatterns": [".*"],
+      "excludePackageNames": ["doki-exts"],
       "enabled": false
     }
   ]
