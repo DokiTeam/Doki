@@ -38,7 +38,7 @@ import org.dokiteam.doki.core.util.ext.getDisplayIcon
 import org.dokiteam.doki.core.util.ext.getDisplayMessage
 import org.dokiteam.doki.core.util.ext.getParcelableExtraCompat
 import org.dokiteam.doki.core.util.ext.getThemeColor
-import org.dokiteam.doki.core.util.ext.isAnimatedImage
+import org.dokiteam.doki.core.util.ext.isSupportedAnimatedImage
 import org.dokiteam.doki.core.util.ext.mangaSourceExtra
 import org.dokiteam.doki.core.util.ext.observe
 import org.dokiteam.doki.core.util.ext.observeEvent
@@ -125,7 +125,7 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(),
 
 	private fun loadImage() {
 		val url = intent.data?.toString()
-		val isAnimated = url?.isAnimatedImage() == true
+		val isAnimated = url?.isSupportedAnimatedImage() == true
 
 		if (isAnimated) {
 			viewBinding.ssiv.isVisible = false
