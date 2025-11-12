@@ -19,14 +19,12 @@ import coil3.request.SuccessResult
 import coil3.request.lifecycle
 import coil3.request.target
 import coil3.target.GenericViewTarget
-import coil3.target.Target
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.dokiteam.doki.R
 import org.dokiteam.doki.core.exceptions.resolve.SnackbarErrorObserver
-import org.dokiteam.doki.core.image.CoilImageView
 import org.dokiteam.doki.core.image.CoilMemoryCacheKey
 import org.dokiteam.doki.core.model.MangaSource
 import org.dokiteam.doki.core.nav.AppRouter

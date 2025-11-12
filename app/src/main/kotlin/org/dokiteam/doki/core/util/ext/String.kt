@@ -72,11 +72,7 @@ fun <T> Collection<T>.joinToStringWithLimit(context: Context, limit: Int, transf
 
 fun String.isHttpUrl() = startsWith("https://", ignoreCase = true) || startsWith("http://", ignoreCase = true)
 
-fun String.isAnimatedImage() = when {
-    contains(".gif", ignoreCase = true) -> true
-    contains(".webp", ignoreCase = true) -> isAnimatedWebP()
-    else -> false
-}
+fun String.isAnimatedImage() = contains(".gif", ignoreCase = true) || contains(".webp", ignoreCase = true) && isAnimatedWebP()
 
 fun concatStrings(context: Context, a: String?, b: String?): String? = when {
 	a.isNullOrEmpty() && b.isNullOrEmpty() -> null
