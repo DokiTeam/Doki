@@ -2,10 +2,6 @@
 
 ### Please give the repo a :star:
 
-| Stars | Need help? |
-|-------|---------|
-| [![Stars](https://img.shields.io/github/stars/DokiTeam/Doki.svg?style=flat)](https://github.com/DokiTeam/Doki) | [![Discord](https://img.shields.io/discord/1435615296202477581.svg?label=discord&labelColor=7289da&color=2c2f33&style=flat)](https://discord.gg/PTd2bYgz9m) |
-
 ## Usage
 **If you are new to this repository, please go to [build-apps](https://github.com/DokiTeam/build-apps) repository first.**
 
