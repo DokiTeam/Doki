@@ -82,25 +82,3 @@ fun SourceFetchResult.copyWithNewSource(): SourceFetchResult = SourceFetchResult
 	mimeType = mimeType,
 	dataSource = dataSource,
 )
-
-fun String.isAnimatedWebP(): Boolean = runCatching {
-    val client = okhttp3.OkHttpClient.Builder()
-        .connectTimeout(2, java.util.concurrent.TimeUnit.SECONDS)
-        .readTimeout(2, java.util.concurrent.TimeUnit.SECONDS)
-        .build()
-
-    val request = okhttp3.Request.Builder()
-        .url(this)
-        .header("Range", "bytes=0-20")
-        .build()
-
-    client.newCall(request).execute().use { response ->
-        val bytes = response.body.bytes()
-
-        bytes.size >= 21 &&
-            bytes[0] == 0x52.toByte() && bytes[3] == 0x46.toByte() &&
-            bytes[8] == 0x57.toByte() && bytes[11] == 0x50.toByte() &&
-            bytes[12] == 0x56.toByte() && bytes[15] == 0x58.toByte() &&
-            (bytes[20].toInt() and 0x02) != 0
-    }
-}.getOrDefault(false)

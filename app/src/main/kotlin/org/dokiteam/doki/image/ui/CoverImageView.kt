@@ -36,7 +36,7 @@ import org.dokiteam.doki.core.ui.image.TrimTransformation
 import org.dokiteam.doki.core.util.ext.bookmarkExtra
 import org.dokiteam.doki.core.util.ext.decodeRegion
 import org.dokiteam.doki.core.util.ext.getThemeColor
-import org.dokiteam.doki.core.util.ext.isAnimatedImage
+import org.dokiteam.doki.core.util.ext.isSupportedAnimatedImage
 import org.dokiteam.doki.core.util.ext.isNetworkError
 import org.dokiteam.doki.core.util.ext.mangaExtra
 import org.dokiteam.doki.core.util.ext.mangaSourceExtra
@@ -110,7 +110,7 @@ class CoverImageView @JvmOverloads constructor(
 		}
 	}
 
-	private fun isAnimatedUrl(url: String?): Boolean = url?.isAnimatedImage() == true
+	private fun isAnimatedUrl(url: String?): Boolean = url?.isSupportedAnimatedImage() == true
 
 	private fun newRequestBuilder(applyTrim: Boolean) = super.newRequestBuilder().apply {
 		if (trimImage && applyTrim) {

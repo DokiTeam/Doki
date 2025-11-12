@@ -23,7 +23,7 @@ import org.dokiteam.doki.core.image.CoilImageView
 import org.dokiteam.doki.core.os.NetworkState
 import org.dokiteam.doki.core.ui.list.lifecycle.LifecycleAwareViewHolder
 import org.dokiteam.doki.core.util.ext.getDisplayMessage
-import org.dokiteam.doki.core.util.ext.isAnimatedImage
+import org.dokiteam.doki.core.util.ext.isSupportedAnimatedImage
 import org.dokiteam.doki.core.util.ext.isLowRamDevice
 import org.dokiteam.doki.core.util.ext.isSerializable
 import org.dokiteam.doki.core.util.ext.observe
@@ -173,7 +173,7 @@ abstract class BasePageHolder<B : ViewBinding>(
 			bindingInfo.progressBar.isIndeterminate = true
 			bindingInfo.textViewStatus.setText(R.string.loading_)
 		}
-		val isAnimated = boundData?.url?.isAnimatedImage() == true
+		val isAnimated = boundData?.url?.isSupportedAnimatedImage() == true
 		when (state) {
 			is PageState.Converting -> {
 				bindingInfo.textViewStatus.setText(R.string.processing_)
