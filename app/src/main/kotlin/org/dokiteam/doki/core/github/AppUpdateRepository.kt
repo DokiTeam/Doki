@@ -71,9 +71,9 @@ class AppUpdateRepository @Inject constructor(
                 id = json.getLong("id"),
                 url = json.getString("html_url"),
                 name = if (currentBuildType == BUILD_TYPE_LEGACY) {
-                    "C" + json.getString("tag_name")
+                    "C" + json.getString("tag_name").takeLast(6)
                 } else {
-                    "P" + json.getString("tag_name")
+                    "P" + json.getString("tag_name").takeLast(6)
                 },
                 apkSize = asset.getLong("size"),
                 apkUrl = asset.getString("browser_download_url"),
