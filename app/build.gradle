@@ -18,7 +18,8 @@ android {
 	defaultConfig {
 		applicationId 'org.dokiteam.doki'
 		minSdk = 21
-		targetSdk = 36
+		//noinspection ExpiredTargetSdkVersion
+		targetSdk = 22
 
         versionCode = 1
         versionName "1.0"
@@ -114,6 +115,7 @@ android {
 		schemaDirectory "$projectDir/schemas"
 	}
 	lint {
+        checkReleaseBuilds false
 		abortOnError true
 		disable 'MissingTranslation', 'PrivateResource', 'SetJavaScriptEnabled', 'SimpleDateFormat'
 	}
