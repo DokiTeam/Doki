@@ -1,7 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:base"],
-  "enabledManagers": ["gradle-version-catalog"],
   "dependencyDashboard": true,
   "customManagers": [
     {
@@ -20,12 +19,12 @@
     {
       "matchPackageNames": ["doki-exts"],
       "groupName": "doki-exts",
-      "branchName": "renovate/doki-exts",
+      "branchTopic": "doki-exts",
       "commitMessagePrefix": "chore(deps): Update extensions / plugins for Doki",
       "commitMessageTopic": "Replace doki-exts version with latest commit from base branch",
       "automerge": true,
       "automergeType": "branch",
-      "schedule": ["daily"]
+      "schedule": ["after 11pm every day"]
     },
     {
       "matchPackagePatterns": [".*"],
