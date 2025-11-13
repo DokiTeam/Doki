@@ -90,7 +90,6 @@ coil-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coil" }
 conscrypt-android = { module = "org.conscrypt:conscrypt-android", version.ref = "conscrypt" }
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar" }
 disk-lru-cache = { module = "com.github.solkin:disk-lru-cache", version.ref = "diskLruCache" }
-doki-exts = { module = "com.github.DokiTeam:doki-exts", version.ref = "exts" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "dagger" }
