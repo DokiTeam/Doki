@@ -37,7 +37,7 @@ class AppUpdateRepository @Inject constructor(
     @ApplicationContext context: Context,
 ) {
 
-    private val user: String = context.getString(R.string.github_updates_repo)
+    private val user: String = context.getString(R.string.gh_username)
     private val availableUpdate = MutableStateFlow<AppVersion?>(null)
     private val releasesUrl = buildString {
         append("https://api.github.com/repos/")

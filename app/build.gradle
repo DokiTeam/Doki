@@ -38,12 +38,16 @@ android {
 			localProperties.load(new FileInputStream(localPropertiesFile))
 		}
 
-        def ghUser = System.getProperty("github_updates_repo")
-            ?: localProperties.getProperty("github_updates_repo", "")
+        // Put your GitHub username in this flag when building for in-app update feature
+        // -Dgh_username=
+        def ghUser = System.getProperty("gh_username")
+            ?: localProperties.getProperty("gh_username", "")
+        resValue "string", "gh_username", ghUser
+
+        // Put your Telegram bot token in this flag when building for Telegram backup feature
+        // -Dtg_backup_bot_token=
         def tgKey = System.getProperty("tg_backup_bot_token")
             ?: localProperties.getProperty("tg_backup_bot_token", "")
-
-        resValue "string", "github_updates_repo", ghUser
         resValue 'string', 'tg_backup_bot_token', tgKey
 	}
     signingConfigs {
@@ -142,9 +146,16 @@ android {
     }
 }
 dependencies {
-	implementation(libs.doki.exts) {
-		exclude group: 'org.json', module: 'json'
-	}
+    def exts = libs.versions.exts.get()
+    if (System.properties.containsKey('exts')) {
+        // Use this flag with build command for auto-fetch and replace:
+        // -Dexts=$(curl -s https://api.github.com/repos/DokiTeam/doki-exts/commits/base -H "Accept: application/vnd.github.sha" | cut -c -10)
+        exts = System.getProperty('exts')
+    }
+    //noinspection UseTomlInstead
+    implementation("com.github.DokiTeam:doki-exts:$exts") {
+        exclude group: 'org.json', module: 'json'
+    }
 
 	coreLibraryDesugaring libs.desugar.jdk.libs
 	implementation libs.kotlin.stdlib
