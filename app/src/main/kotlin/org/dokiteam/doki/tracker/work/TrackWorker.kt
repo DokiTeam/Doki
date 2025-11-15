@@ -115,7 +115,7 @@ class TrackWorker @AssistedInject constructor(
 		}
 
 		val notifications = checkUpdatesAsync(tracks)
-		if (notifications.isNotEmpty() && applicationContext.checkNotificationPermission(null)) {
+		if (notifications.isNotEmpty() && applicationContext.checkNotificationPermission(TrackerNotificationHelper.CHANNEL_ID)) {
 			val groupNotification = notificationHelper.createGroupNotification(notifications)
 			notifications.forEach { notificationManager.notify(it.tag, it.id, it.notification) }
 			if (groupNotification != null) {
