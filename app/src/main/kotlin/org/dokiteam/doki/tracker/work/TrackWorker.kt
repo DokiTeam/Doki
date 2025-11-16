@@ -33,9 +33,8 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
@@ -95,7 +94,7 @@ class TrackWorker @AssistedInject constructor(
 			doWorkImpl(isFullRun = isForeground && TAG_ONESHOT in tags)
 		} catch (e: CancellationException) {
 			throw e
-		} catch (e: Throwable) {
+        } catch (e: Throwable) {
 			e.printStackTraceDebug()
 			Result.failure()
 		} finally {
@@ -105,74 +104,102 @@ class TrackWorker @AssistedInject constructor(
 		}
 	}
 
-	private suspend fun doWorkImpl(isFullRun: Boolean): Result {
-		if (!settings.isTrackerEnabled) {
-			return Result.success()
-		}
-		val tracks = getTracksUseCase(if (isFullRun) Int.MAX_VALUE else BATCH_SIZE)
-		if (tracks.isEmpty()) {
-			return Result.success()
-		}
+    private suspend fun doWorkImpl(isFullRun: Boolean): Result {
+        if (!settings.isTrackerEnabled) {
+            return Result.success()
+        }
+        val tracks = getTracksUseCase(if (isFullRun) Int.MAX_VALUE else BATCH_SIZE)
+        if (tracks.isEmpty()) {
+            return Result.success()
+        }
 
-		val notifications = checkUpdatesAsync(tracks)
-		if (notifications.isNotEmpty() && applicationContext.checkNotificationPermission(TrackerNotificationHelper.CHANNEL_ID)) {
-			val groupNotification = notificationHelper.createGroupNotification(notifications)
-			notifications.forEach { notificationManager.notify(it.tag, it.id, it.notification) }
-			if (groupNotification != null) {
-				notificationManager.notify(TAG, TrackerNotificationHelper.GROUP_NOTIFICATION_ID, groupNotification)
-			}
-		}
-		return Result.success()
-	}
+        checkUpdatesAsync(tracks)
+        return Result.success()
+    }
 
-	@CheckResult
-	private suspend fun checkUpdatesAsync(tracks: List<MangaTracking>): List<NotificationInfo> {
-		val semaphore = Semaphore(MAX_PARALLELISM)
-		return channelFlow {
-			for (track in tracks) {
-				launch {
-					semaphore.withPermit {
-						send(
-							runCatchingCancellable {
-								checkNewChaptersUseCase.invoke(track)
-							}.getOrElse { error ->
-								MangaUpdates.Failure(
-									manga = track.manga,
-									error = error,
-								)
-							},
-						)
-					}
-				}
-			}
-		}.onEachIndexed { index, it ->
-			if (applicationContext.checkNotificationPermission(WORKER_CHANNEL_ID)) {
-				notificationManager.notify(WORKER_NOTIFICATION_ID, createWorkerNotification(tracks.size, index + 1))
-			}
-			when (it) {
-				is MangaUpdates.Failure -> {
-					val e = it.error
-					if (e is CloudFlareException) {
-						captchaHandler.handle(e)
-					}
-				}
+    @CheckResult
+    private suspend fun checkUpdatesAsync(tracks: List<MangaTracking>) {
+        val semaphore = Semaphore(MAX_PARALLELISM)
+        val groupNotifications = mutableListOf<NotificationInfo>()
 
-				is MangaUpdates.Success -> processDownload(it)
-			}
-		}.mapNotNull {
-			when (it) {
-				is MangaUpdates.Failure -> null
-				is MangaUpdates.Success -> if (it.isValid && it.isNotEmpty()) {
-					notificationHelper.createNotification(
-						manga = it.manga,
-						newChapters = it.newChapters,
-					)
-				} else {
-					null
-				}
-			}
-		}.toList()
-	}
+        try {
+            channelFlow {
+                for (track in tracks) {
+                    launch {
+                        semaphore.withPermit {
+                            send(
+                                runCatchingCancellable {
+                                    checkNewChaptersUseCase.invoke(track)
+                                }.getOrElse { error ->
+                                    MangaUpdates.Failure(
+                                        manga = track.manga,
+                                        error = error,
+                                    )
+                                },
+                            )
+                        }
+                    }
+                }
+            }.onEachIndexed { index, it ->
+                if (applicationContext.checkNotificationPermission(WORKER_CHANNEL_ID)) {
+                    notificationManager.notify(
+                        WORKER_NOTIFICATION_ID,
+                        createWorkerNotification(tracks.size, index + 1)
+                    )
+                }
+
+                when (it) {
+                    is MangaUpdates.Failure -> {
+                        val e = it.error
+                        if (e is CloudFlareException) {
+                            captchaHandler.handle(e)
+                        }
+                    }
+
+                    is MangaUpdates.Success -> {
+                        processDownload(it)
+
+                        if (it.isValid && it.isNotEmpty()) {
+                            val notificationInfo = notificationHelper.createNotification(
+                                manga = it.manga,
+                                newChapters = it.newChapters,
+                            )
+
+                            if (notificationInfo != null &&
+                                applicationContext.checkNotificationPermission(TrackerNotificationHelper.CHANNEL_ID)) {
+                                notificationManager.notify(
+                                    notificationInfo.tag,
+                                    notificationInfo.id,
+                                    notificationInfo.notification
+                                )
+
+                                synchronized(groupNotifications) {
+                                    groupNotifications.add(notificationInfo)
+                                }
+                            }
+                        }
+                    }
+                }
+            }.collect()
+
+        } catch (e: CancellationException) {
+            e.printStackTraceDebug()
+        } finally {
+            withContext(NonCancellable) {
+                if (groupNotifications.size > 1 &&
+                    applicationContext.checkNotificationPermission(TrackerNotificationHelper.CHANNEL_ID)) {
+                    val groupNotification = notificationHelper.createGroupNotification(groupNotifications)
+                    if (groupNotification != null) {
+                        notificationManager.notify(
+                            TAG,
+                            TrackerNotificationHelper.GROUP_NOTIFICATION_ID,
+                            groupNotification
+                        )
+                    }
+                }
+            }
+        }
+    }
 
 	override suspend fun getForegroundInfo(): ForegroundInfo {
 		val channel = NotificationChannelCompat.Builder(
