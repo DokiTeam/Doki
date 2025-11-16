@@ -26,7 +26,7 @@ import java.security.SecureRandom
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val REDIRECT_URI = "doki://mal-auth"
+private const val REDIRECT_URI = "kotatsu://mal-auth"
 private const val BASE_WEB_URL = "https://myanimelist.net"
 private const val BASE_API_URL = "https://api.myanimelist.net/v2"
 

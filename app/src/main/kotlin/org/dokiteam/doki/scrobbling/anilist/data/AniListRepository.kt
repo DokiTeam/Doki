@@ -28,7 +28,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.roundToInt
 
-private const val REDIRECT_URI = "doki://anilist-auth"
+private const val REDIRECT_URI = "kotatsu://anilist-auth"
 private const val BASE_URL = "https://anilist.co/api/v2/"
 private const val ENDPOINT = "https://graphql.anilist.co"
 private const val MANGA_PAGE_SIZE = 10

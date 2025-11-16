@@ -103,7 +103,7 @@ class KitsuAuthActivity : BaseActivity<ActivityKitsuAuthBinding>(),
 	private fun continueAuth() {
 		val email = viewBinding.editEmail.text?.toString()?.trim().orEmpty()
 		val password = viewBinding.editPassword.text?.toString()?.trim().orEmpty()
-		val url = "doki://kitsu-auth?code=" + "$email;$password".urlEncoded()
+		val url = "kotatsu://kitsu-auth?code=" + "$email;$password".urlEncoded()
 		val intent = Intent(Intent.ACTION_VIEW, url.toUri())
 		startActivity(intent)
 		finishAfterTransition()
